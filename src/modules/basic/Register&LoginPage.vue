@@ -70,6 +70,7 @@
 import AUTH from "services/auth";
 import { required, email, sameAs } from "vuelidate/lib/validators";
 var passwordHash = require('password-hash');
+const axios = require('axios');
 export default {
   data() {
     return {
@@ -126,27 +127,19 @@ export default {
       }
       alert("SUCCESS!! :-)\n\n" + JSON.stringify(this.form))
       alert(encryptPass +" "+ encryptEmail +" "+ encryptUserName);
+      var data = {
+        username: this.form.username,
+        email: this.form.username,
+        password: this.form.password
+      }
+      axios.post('/users',data)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
       AUTH.register(this.form.email, this.form.password);
-      // if (this.form.password === this.form.confirmPassword) {
-      //    
-      // } else {
-      //   console.log("Password didn't match");
-      // }
-      // let link= `http://localhost:3000/db/update/${this.form.username}/${this.form.email}/${this.form.password}`
-      // let link= `http://localhost:3000/db/delete`
-      // let link= `http://localhost:3000/db/retrieve/${this.form.username}`
-      // let link = `http://localhost:3000/db/create/${this.form.username}/${
-      //   this.form.email
-      // }/${this.form.password}`;
-      // $.ajax({
-      //   url: link,
-      //   method: "GET",
-      //   headers: {
-      //     "Access-Control-Allow-Origin": "*"
-      //   }
-      // }).then(response => {
-      //   alert(response.username);
-      // });
     }
   }
 };

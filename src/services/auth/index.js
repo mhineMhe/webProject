@@ -1,4 +1,5 @@
-import ROUTER from 'router';
+const axios = require('axios');
+import ROUTER from "router";
 
 export default {
     user: null,
@@ -8,7 +9,19 @@ export default {
         this.user = user
     },
 
-    register(email, password) {
+    register(username, email, password) {
+        var data = {
+            username: username,
+            email: email,
+            password: password
+        }
+        axios.post('http://localhost:3000/users', data)
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         this.registeredUser.push({
             email: email,
             password: password
@@ -19,16 +32,21 @@ export default {
         ROUTER.push('/dashboard')
     },
     login(email, password) {
-        for (let i = 0; i < this.registeredUser.length; i++) {
-            if (this.registeredUser[i].email === email && this.registeredUser[i].password === password) {
-                this.setUser(email);
-                ROUTER.push('/dashboard');
-                return this.registeredUser[i];
-            } else {
-                alert("Email or Password is incorrect!")
-            }
-            
+        var data = {
+            email: email,
+            password: password
         }
+        axios.post('http://localhost:3000/login', data)
+            .then(function (response) {
+                localStorage.setItem("user", response.data)
+                
+                ROUTER.push('/dashboard');
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+            this.setUser(localStorage.getItem("user"))
         return null
     },
     logout() {

@@ -70,7 +70,6 @@
 import AUTH from "services/auth";
 import { required, email, sameAs } from "vuelidate/lib/validators";
 var passwordHash = require('password-hash');
-const axios = require('axios');
 export default {
   data() {
     return {
@@ -127,19 +126,7 @@ export default {
       }
       alert("SUCCESS!! :-)\n\n" + JSON.stringify(this.form))
       alert(encryptPass +" "+ encryptEmail +" "+ encryptUserName);
-      var data = {
-        username: this.form.username,
-        email: this.form.username,
-        password: this.form.password
-      }
-      axios.post('/users',data)
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-      AUTH.register(this.form.email, this.form.password);
+      AUTH.register(this.form.username, this.form.email, this.form.password);
     }
   }
 };

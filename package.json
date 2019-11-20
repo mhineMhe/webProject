@@ -16,6 +16,8 @@
     "jquery": "^3.4.1",
     "mdbootstrap": "^4.8.10",
     "mdbvue": "^6.0.1",
+    "mongoose": "^5.7.12",
+    "nodemon": "^1.19.4",
     "password-hash": "^1.2.2",
     "vue": "^2.6.10",
     "vue-awesome": "^3.5.4",
@@ -44,7 +46,9 @@
       "plugin:vue/essential",
       "eslint:recommended"
     ],
-    "rules": {},
+    "rules": {
+      "no-console": "off"
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }

@@ -109,7 +109,7 @@
 
 
 <script>
-import ROUTER from "router"
+// import ROUTER from "router"
 export default {
   name: "authForm",
   data() {

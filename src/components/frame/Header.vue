@@ -9,7 +9,7 @@
             <!-- <b-nav-item v-on:click="redirect('/register')" v-if="auth.user === null">Sign Up</b-nav-item>
             <b-nav-item v-on:click="redirect('/login')" v-if="auth.user === null">Login</b-nav-item> -->
             <!-- <b-button size="sm" class="my-2 my-sm-0" type="submit" v-on:click="redirect('/register')"  id="register">Register</b-button>&nbsp;&nbsp;&nbsp; -->
-              <b-form-input class="input"  v-if="auth.user === null" v-model="form.username" type="email" required placeholder="Email"></b-form-input>&nbsp;&nbsp;&nbsp;
+              <b-form-input class="input"  v-if="auth.user === null" v-model="form.email" type="email" required placeholder="Email"></b-form-input>&nbsp;&nbsp;&nbsp;
               <b-form-input  class="input"  v-if="auth.user === null" v-model="form.password" type="password" required placeholder="Password"></b-form-input>&nbsp;&nbsp;&nbsp;
               <b-button v-on:click="onSubmit"  v-if="auth.user === null" id="login">Login</b-button>
 
@@ -32,7 +32,7 @@
       return {
         auth: AUTH,
         form:{
-          username: "",
+          email: "",
           password: ""
         }
       };
@@ -43,8 +43,7 @@
       // }
       onSubmit(e){
         e.preventDefault();
-        AUTH.login();
-
+        AUTH.login(this.form.email, this.form.password);
       }
     }
   };

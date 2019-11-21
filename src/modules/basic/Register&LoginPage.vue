@@ -69,6 +69,7 @@
 <script>
 import AUTH from "services/auth";
 import { required, email, sameAs } from "vuelidate/lib/validators";
+// const axios = require('axios');
 var passwordHash = require('password-hash');
 export default {
   data() {
@@ -112,9 +113,23 @@ export default {
     
     onSubmit(evt) {
       evt.preventDefault();
-      sessionStorage.setItem("Password", this.form.password);
-      sessionStorage.setItem("Username", this.form.username);
-      sessionStorage.setItem("Email", this.form.email);
+      // var data = {
+      //     username: "zxcv",
+      //     email: "zxcv@gmail.com",
+      //     password: "zxcv@321",
+      //     partneredId: "zxcv"
+      // }
+      
+      // axios.post('http://localhost:3000/', data)
+      //     .then(function (response) {
+      //         console.log(response);
+      //     })
+      //     .catch(function (error) {
+      //         console.log(error);
+      //     });
+      // sessionStorage.setItem("Password", this.form.password);
+      // sessionStorage.setItem("Username", this.form.username);
+      // sessionStorage.setItem("Email", this.form.email);
       this.submitted = true;
       var encryptPass = passwordHash.generate(this.form.password);
       var encryptEmail = passwordHash.generate(this.form.email);

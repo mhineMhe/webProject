@@ -17,20 +17,15 @@ export default {
         }
         axios.post('http://localhost:3000/users', data)
             .then(function (response) {
+                localStorage.setItem("user", email)
+                ROUTER.push('/dashboard')
                 console.log(response);
             })
             .catch(function (error) {
                 console.log(error);
             });
-        this.registeredUser.push({
-            email: email,
-            password: password
-        })
-        // var p = JSON.parse(JSON.stringify(this.registeredUser))
-        // console.log(p)
-        this.setUser(email);
-        ROUTER.push('/dashboard')
     },
+
     login(email, password) {
         var data = {
             email: email,
@@ -38,15 +33,17 @@ export default {
         }
         axios.post('http://localhost:3000/login', data)
             .then(function (response) {
-                localStorage.setItem("user", response.data)
-                
-                ROUTER.push('/dashboard');
-                console.log(response);
+                localStorage.setItem("user", email)
+                if(response.data.user.partneredId != null){
+                    ROUTER.push('/personalinformation');
+                }else{
+                    ROUTER.push('/dashboard');
+                }
+                console.log(response.data);
             })
             .catch(function (error) {
                 console.log(error);
             });
-            this.setUser(localStorage.getItem("user"))
         return null
     },
     logout() {

@@ -8,6 +8,14 @@ import router from 'router'
 import VueSidebarMenu from 'vue-sidebar-menu'
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 import Vuelidate from 'vuelidate'
+Vue.use(require('vue-pusher'), {
+  api_key: '19f814902a00899fa4c5',
+  options: {
+      cluster: 'ap1',
+      encrypted: true,
+  }
+});
+
 
 Vue.use(Vuelidate)
 Vue.use(VueSidebarMenu)

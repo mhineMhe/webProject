@@ -136,7 +136,7 @@ export default {
         password: "",
         confirmPassword: ""
       },
-      show: true,
+      show: false,
       passwordVisible: false,
       submitted: false
     };

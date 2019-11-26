@@ -34,9 +34,10 @@ export default {
         axios.post('http://localhost:3000/login', data)
             .then(function (response) {
                 localStorage.setItem("user", email)
-                if(response.data.user.partneredId != null){
-                    ROUTER.push('/personalinformation');
-                }else{
+                // console.log(response.data.part.partneredId)
+                if(response.data.user == null && response.data.part.partneredId != null){
+                    ROUTER.push('/dashboardPartneredUser');
+                }else if(response.data.user != null){
                     ROUTER.push('/dashboard');
                 }
                 console.log(response.data);

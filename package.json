@@ -19,6 +19,8 @@
     "mongoose": "^5.7.12",
     "nodemon": "^1.19.4",
     "password-hash": "^1.2.2",
+    "sweetalert": "^2.1.2",
+    "sweetalert2": "^9.4.0",
     "vue": "^2.6.10",
     "vue-awesome": "^3.5.4",
     "vue-router": "^3.1.3",

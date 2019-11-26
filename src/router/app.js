@@ -29,6 +29,13 @@ export default {
         meta: {
             tokenRequired: true
         }
+    }, {
+        path: '/dashboardPartneredUser',
+        name: 'dashboardPartneredUser',
+        component: resolve => require(['modules/basic/DashboardPartneredUser.vue'], resolve),
+        meta: {
+            tokenRequired: true
+        }
     }
 
     ]

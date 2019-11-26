@@ -6,9 +6,10 @@
           <!-- Tab 1 -->
           <b-tab title="Online Users" active>
             <b-form-group>
-              <i id="searchIcon" class="fa fa-search fa_custom fa-2x" @click="searchAddress()"></i>
-              <b-form-input id="searchBar" required placeholder="Search Location" v-model="search"></b-form-input>
+              <i id="searchIcon" class="fa fa-search fa_custom fa-2x"></i>
+              <b-form-input id="searchBar" required placeholder="Search Location"></b-form-input>
             </b-form-group>
+
             <b-container fluid>
                 <b-row>
                     <b-col cols="3" v-for="(item, index) in data" :key="index">
@@ -57,6 +58,34 @@
                   </b-card>
                 </b-col>
                 <b-col cols="2">
+                </b-col>
+              </b-row>
+            </b-container>
+          </b-tab>
+          <!-- Tab 4 -->
+          <b-tab title="Tracking Form">
+            <b-container fluid>
+              <b-row>
+                <b-col cols="1">
+                </b-col>
+                <b-col cols="9">
+                   <b-form-group label="Tracking No:  ">
+                      <b-form-input class="motif" required placeholder="Specific Location"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="To:">
+                      <b-form-input class="motif" type="email" required placeholder="Recepient's Email"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Location:">
+                      <b-form-input class="motif" required placeholder="Recepient's Location"></b-form-input>
+                  </b-form-group>
+                  <b-form-group label="Date:">
+                      <b-form-input class="motif" required placeholder="Date"></b-form-input>
+                  </b-form-group>
+                 
+                </b-col>
+                <b-col cols="2">
+                    <br>
+                    <b-button block variant id="addBtn">Add</b-button>
                 </b-col>
               </b-row>
             </b-container>
@@ -131,9 +160,7 @@ export default {
   },
   data() {
     return {
-      data: [],
-      searchAdd: [],
-      search: ""
+      data: []
     };
   },
   component: {
@@ -151,20 +178,6 @@ export default {
     },
     redirect(route){
       ROUTER.push(route);
-    },
-    searchAddress(){
-      axios.get('http://localhost:3000/dashboardSearch', this.search)
-      .then(function (response) {
-        console.log(response)
-          // if(response.data.partners.length > 0){
-          //   this.searchAdd = response.data.partners
-          // }else{
-          //   this.searchAdd = []
-          // }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
     }
   }
 };

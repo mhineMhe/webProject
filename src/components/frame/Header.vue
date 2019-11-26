@@ -14,7 +14,7 @@
               <b-button v-on:click="onSubmit"  v-if="auth.user === null" id="login">Login</b-button>
 
               <i v-if="auth.user !== null" class="fa fa-fw fa-home fa-2x" v-b-toggle.collapse-2></i>&nbsp;&nbsp;&nbsp;
-              <i v-if="auth.user !== null" class="fas fa-bell fa-2x"></i>&nbsp;&nbsp;&nbsp;
+              <!-- <i v-if="auth.user !== null" class="fas fa-bell fa-2x"></i>&nbsp;&nbsp;&nbsp; -->
               <i v-if="auth.user !== null" class="fas fa-user-circle fa-2x"></i>&nbsp;&nbsp;&nbsp;
              
           </b-navbar-nav>

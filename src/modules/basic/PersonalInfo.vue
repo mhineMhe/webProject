@@ -1,55 +1,162 @@
 <template>
-  <div>
-    <br>
-    <br><br>
-    <div class="mt-3">
-      <b-card no-body class="overflow-hidden" style="max-width: 540px;">
-        <b-row no-gutters>
-          <b-col md="5">
-            <b-card-img :src="require('assets/user.png')" class="rounded-0" id="userIcon"></b-card-img>
+  <div id="container">
+    <div>
+      <center>
+        <h1>Profile</h1><hr>
+      </center>
+    </div>
+    <div class="mt-4">
+      <b-container fluid class>
+        <b-row>
+          <b-col cols="4">
+            <b-img
+              thumbnail
+              fluid
+              v-b-tooltip.hover.top
+              title="Change your Avatar"
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRAbWaFoCWis0v0glUMFab42PBZ3Y0_Z8UJAjxErDyJRz2vY7kN"
+              alt="Image 3"
+              id="userIcon"
+            ></b-img>
+            <center>
+              <h1>Hi {{Uname}}</h1>
+            </center>
+            <!-- </v-hover> -->
           </b-col>
-          <b-col md="7">
-            <b-card-body title="Personal Information">
-              <b-card-text>Name: {{Uname}}</b-card-text>
-              <b-card-text>Email: {{Email}}</b-card-text>
-              <b-card-text>Password: ******</b-card-text>
-            </b-card-body>
+          <b-col cols="8">
+            <div class="form-group">
+              <label for="fullname">Full Name</label>
+              <b-form-input
+                required
+                type="text"
+                class="form-control"
+                id="fullname"
+                v-model="fullname"
+              ></b-form-input>
+            </div>
+            <div class="form-group">
+              <label for="username" class="bmd-label-floating">Username</label>
+              <b-form-input
+                required
+                type="text"
+                class="form-control"
+                id="Username"
+                v-model="username"
+              ></b-form-input>
+            </div>
+            <div class="form-group">
+              <label for="email" class="bmd-label-floating">Email</label>
+              <b-form-input required type="email" class="form-control" id="Email" v-model="email"></b-form-input>
+            </div>
+            <div class="form-group">
+              <label for="address" class="bmd-label-floating">Address</label>
+              <b-form-input
+                required
+                type="text"
+                class="form-control"
+                id="Address"
+                v-model="address"
+              ></b-form-input>
+            </div>
+            <div class="form-group">
+              <label for="phone" class="bmd-label-floating">PhoneNo.</label>
+              <b-form-input required type="text" class="form-control" id="phone" v-model="phone"></b-form-input>
+            </div>
+            <div class="form-group">
+              <label for="pwd" class="bmd-label-floating">Password</label>
+              <b-form-input
+                required
+                type="password"
+                class="form-control"
+                id="passw"
+                v-model="password"
+              ></b-form-input>
+            </div>
           </b-col>
         </b-row>
-      </b-card>
+      </b-container>
     </div>
+
+    <center>
+      <button
+        type="button"
+        class="btn btn-outline-primary login-btn"
+        id="btnLogin"
+        @click="save"
+      >Save changes</button>
+    </center>
+    <br />
+    <br />
   </div>
 </template>
-<style lang="scss" scoped>
-@import "~assets/colors.scss";
-#userIcon {
-  padding: 2em;
-  width: 110%;
-  height: auto;
-}
-b-card-text {
-  text-align: left;
-}
-.mt-3 {
-  margin: 30%;
-  box-shadow: 5px 10px 18px #888888;
-  //   background-color: $bckg_color !important;
-}
-
-</style>
 
 <script>
-// import ROUTER from 'router'
-import AUTH from 'services/auth'
+import AUTH from "services/auth";
 export default {
   data() {
     return {
       auth: AUTH,
-      Uname: sessionStorage.getItem("Username"),
-      Email: sessionStorage.getItem("Email"),
-      Pass: sessionStorage.getItem("Password")
+      fullname: "",
+      username: "",
+      email: "",
+      address: "",
+      phone: "",
+      password: "",
+      Uname: sessionStorage.getItem("Username")
     };
   },
+  methods: {
+    save: function(e) {
+      e.preventDefault();
+      sessionStorage.setItem("Fullname", this.fullname),
+        sessionStorage.setItem("Username", this.username),
+        sessionStorage.setItem("Email", this.email),
+        sessionStorage.setItem("Address", this.address),
+        sessionStorage.setItem("Phone", this.phone),
+        sessionStorage.setItem("Password", this.password),
+        // AUTH.save(this.username, this.email, this.password);
+        (this.fullname = ""),
+        (this.username = ""),
+        (this.email = ""),
+        (this.address = ""),
+        (this.phone = ""),
+        (this.password = "");
+    }
+  }
 };
 </script>
 
+<style scoped>
+#container {
+  margin-left: auto;
+  margin-right: auto;
+}
+.card {
+  background-color: transparent;
+  border: 2px solid ;
+}
+#userIcon {
+  width: 100%;
+  height: 60%;
+  margin-left: 1px;
+  margin-top: 10px;
+}
+.mt-4{
+  border-color:#BB6BD9;;
+}
+.img-thumbnail{
+  border: 1px solid #BB6BD9;  
+}
+.form-control {
+  border: 1px solid #BB6BD9;
+}
+.btn-outline-primary {
+  color:#BB6BD9;
+  border-color:#BB6BD9;
+}
+hr{
+  border-top: 1px solid #BB6BD9;
+  margin-top:1rem;
+  margin-bottom:1rem;
+}
+</style>

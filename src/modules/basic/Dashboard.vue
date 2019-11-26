@@ -6,7 +6,7 @@
           <!-- Tab 1 -->
           <b-tab title="Online Users" active>
             <b-form-group>
-              <i id="searchIcon" class="fa fa-search fa_custom fa-2x" @click="searchAddress()"></i>
+              <i id="searchIcon" style="cursor: pointer" class="fa fa-search fa_custom fa-2x" @click="searchAddress()"></i>
               <b-form-input id="searchBar" required placeholder="Search Location" v-model="search"></b-form-input>
             </b-form-group>
             <b-container fluid>
@@ -128,11 +128,22 @@ export default {
         }
        })
      }, 100)
+
+    //   setTimeout( () => {
+    //    this.searchAddress( response => {
+    //      if(response.data.partners.length > 0){
+    //       this.data = response.data.partners
+    //     }else{
+    //       this.data = []
+    //     }
+    //    })
+    //  }, 100)
+     
   },
   data() {
     return {
       data: [],
-      searchAdd: [],
+      // searchAdd: [],
       search: ""
     };
   },
@@ -152,20 +163,15 @@ export default {
     redirect(route){
       ROUTER.push(route);
     },
-    searchAddress(){
-      axios.get('http://localhost:3000/dashboardSearch', this.search)
-      .then(function (response) {
-        console.log(response)
-          // if(response.data.partners.length > 0){
-          //   this.searchAdd = response.data.partners
-          // }else{
-          //   this.searchAdd = []
-          // }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    }
+    // searchAddress(callback){
+    //   axios.post('http://localhost:3000/dashboardSearch/'+ this.search)
+    //     .then(function (response) {
+    //       callback(response)
+    //     })
+    //     .catch(function (error) {
+    //       console.log(error);
+    //     });
+    // }
   }
 };
 </script>

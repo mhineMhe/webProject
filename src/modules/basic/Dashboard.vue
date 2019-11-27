@@ -125,6 +125,7 @@ import ROUTER from "router"
 const axios = require('axios');
 export default {
    mounted(){
+     this.managePusher();
      setTimeout( () => {
        this.retrieve( response => {
          if(response.data.partner.length > 0){
@@ -134,7 +135,7 @@ export default {
         }
        })
      }, 100)
-     this.managePusher();
+     
   },
   data() {
     return {
@@ -176,7 +177,7 @@ export default {
     },
     managePusher(){
       let user = {
-        account_id:1
+        account_id: 1
       }
       var channel = this.$pusher.subscribe('my-channel');
       channel.bind('my-event', ({notifications}) => {

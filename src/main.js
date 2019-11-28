@@ -9,6 +9,7 @@ import VueSidebarMenu from 'vue-sidebar-menu'
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 import Vuelidate from 'vuelidate'
 
+Vue.use(require('vue-moment'))
 Vue.use(Vuelidate)
 Vue.use(VueSidebarMenu)
 // import Slider from '@jeremyhamm/vue-slider'

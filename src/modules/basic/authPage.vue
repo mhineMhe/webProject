@@ -23,7 +23,7 @@
               <br />
 
               <b-card-text>
-                <p>{{UpdatecurrentDate}}</p>
+                <p><b>{{UpdatecurrentDate}}</b></p>
               </b-card-text>
               <br />
 
@@ -45,8 +45,8 @@
               <b-card-text class="side">
                 <!-- NEEED FOOOORRR CHANNNNNNNNGE -->
                 <p>
-                  I {{UpdateSenderNames}} hereby authorize {{UpdaterecNames}} permission to process and
-                  collect my {{UpdateauthDocument}}in my behalf. To expedite the process, I've included Identification
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I {{UpdateSenderNames}} hereby authorize {{UpdaterecNames}} permission to process and
+                  collect my {{UpdateauthDocument}} in my behalf. To expedite the process, I've included Identification
                   information for verification needs.
                 </p>
               </b-card-text>
@@ -63,7 +63,7 @@
                 <p>Scoped of Authorization:{{Updatedoc}}</p>
               </b-card-text>
               <b-card-text>
-                <p>The Permission to processes the documents in my name starts on {{UpdatecurrentDates}} and ends on {{UpdatedueDates}}.</p>
+                <p>The Permission to processes the documents in my name starts on <b>{{UpdatecurrentDate}}</b> and ends on {{UpdatedueDates}}.</p>
               </b-card-text>
               <br />
 
@@ -71,16 +71,18 @@
               <b-card-text class="side">
                 <p>{{UpdateSenderName}}</p>
               </b-card-text>
-              <b-card-text class="side">
-                <p>{{UpdatedueDate}}</p>
-              </b-card-text>
             </b-card>
           </div>
           <br />
           <br />
           <div>
             <b-button v-b-modal.modalForm id="fillUp" @click="show=true">Fill Up</b-button>
-            <b-button v-b-modal.sendToModal id="sendTo" @click="shows=true"   v-on:click="generateTrackNumber()">Send To</b-button>
+            <b-button
+              v-b-modal.sendToModal
+              id="sendTo"
+              @click="shows=true"
+              v-on:click="generateTrackNumber()"
+            >Send To</b-button>
           </div>
         </b-col>
         <b-col cols="1"></b-col>
@@ -106,7 +108,6 @@
       <form ref="form" @submit.stop.prevent="handleSubmit">
         <!-- Sender's Credentials -->
         <b-form-group
-          :state="nameState"
           label="Sender's Full Name"
           label-for="yourName"
           invalid-feedback="Sender's Full Name is required"
@@ -115,13 +116,11 @@
             class="borderColor"
             id="yourName"
             v-model="SenderName"
-            :state="nameState"
             required
             placeholder="Sender's Full Name"
           ></b-form-input>
         </b-form-group>
         <b-form-group
-          :state="nameState"
           label="Sender's Address"
           label-for="yourAddress"
           invalid-feedback="Address is required"
@@ -130,13 +129,11 @@
             class="borderColor"
             id="yourAddress"
             v-model="yourAddress"
-            :state="nameState"
             required
             placeholder="Sender's Current Address"
           ></b-form-input>
         </b-form-group>
         <b-form-group
-          :state="nameState"
           label="Sender's State/ZIP Code"
           label-for="zip"
           invalid-feedback="State/Zip Code is required"
@@ -145,45 +142,22 @@
             class="borderColor"
             id="zip"
             v-model="zip"
-            :state="nameState"
             required
             placeholder="State/ZIP Code"
           ></b-form-input>
         </b-form-group>
         <!-- Date from & Date to -->
-        <b-form-group
-          :state="nameState"
-          label="Current Date"
-          label-for="currentDate"
-          invalid-feedback="Date is required"
-        >
-          <b-form-input
-            class="borderColor"
-            id="currentDate"
-            v-model="currentDate"
-            :state="nameState"
-            required
-            placeholder="Current Date"
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group
-          :state="nameState"
-          label="Due Date"
-          label-for="dueDate"
-          invalid-feedback="Date is required"
-        >
+        <b-form-group label="Due Date" label-for="dueDate" invalid-feedback="Date is required">
           <b-form-input
             class="borderColor"
             id="dueDate"
             v-model="dueDate"
-            :state="nameState"
             required
             placeholder="Due Date"
           ></b-form-input>
         </b-form-group>
         <!-- Recipient's Credentials -->
         <b-form-group
-          :state="nameState"
           label="Recipient's Full Name"
           label-for="recName"
           invalid-feedback="Recipient's Full Name is required"
@@ -192,13 +166,11 @@
             class="borderColor"
             id="recName"
             v-model="recName"
-            :state="nameState"
             required
             placeholder="Recipient's Full Name"
           ></b-form-input>
         </b-form-group>
         <b-form-group
-          :state="nameState"
           label="Recipient's Address"
           label-for="recAddress"
           invalid-feedback="Recipient's Address is required"
@@ -207,13 +179,11 @@
             class="borderColor"
             id="recAddress"
             v-model="recAddress"
-            :state="nameState"
             required
             placeholder="Recipient's Address"
           ></b-form-input>
         </b-form-group>
         <b-form-group
-          :state="nameState"
           label="Recipient's State/ZIP Code"
           label-for="recZip"
           invalid-feedback="Recipient's State/Zip Code is required"
@@ -222,30 +192,22 @@
             class="borderColor"
             id="recZip"
             v-model="recZip"
-            :state="nameState"
             required
             placeholder="Recipient's State/Zip Code"
           ></b-form-input>
         </b-form-group>
         <!-- Subject -->
-        <b-form-group
-          :state="nameState"
-          label="Subject"
-          label-for="subject"
-          invalid-feedback="Subject is required"
-        >
+        <b-form-group label="Subject" label-for="subject" invalid-feedback="Subject is required">
           <b-form-input
             class="borderColor"
             id="subject"
             v-model="subject"
-            :state="nameState"
             required
             placeholder="Subject"
           ></b-form-input>
         </b-form-group>
         <!-- Types of Documents -->
         <b-form-group
-          :state="nameState"
           label="Types of Document/s"
           label-for="doc"
           invalid-feedback="Type of Document is required"
@@ -254,14 +216,12 @@
             class="borderColor"
             id="doc"
             v-model="doc"
-            :state="nameState"
             required
             placeholder="e.g Birth Certificate"
           ></b-form-input>
         </b-form-group>
         <!-- TYPES OF IDENTITY ID -->
         <b-form-group
-          :state="nameState"
           label="Types of IdentityId"
           label-for="IdentityId"
           invalid-feedback="Type of IdentityId is required"
@@ -270,23 +230,16 @@
             class="borderColor"
             id="IdentityId"
             v-model="IdentityId"
-            :state="nameState"
             required
             placeholder="Please type your IdentityId "
           ></b-form-input>
         </b-form-group>
         <!-- FOR THE ID NUMBER -->
-        <b-form-group
-          :state="nameState"
-          label="ID NUMBER"
-          label-for=" Id Number"
-          invalid-feedback="Type of  IdNumber is required"
-        >
+        <b-form-group label="ID NUMBER" invalid-feedback="Type of  IdNumber is required">
           <b-form-input
             class="borderColor"
             id="IdNumber"
-            v-model="IDNUMBER"
-            :state="nameState"
+            v-model="numberId"
             required
             placeholder="Please type your IdNumber "
           ></b-form-input>
@@ -296,18 +249,18 @@
 
     <!-- Send To -->
     <div>
-      <b-modal id="sendToModal" centered title="Recepient's Email">
+      <b-modal
+        id="sendToModal"
+        centered
+        title="Tracking Number"
+        ok-only
+        @ok="GOTOACTIVITIES"
+        no-close-on-esc
+        no-close-on-backdrop
+        hide-header-close
+      >
         <form>
-          <b-form-group label="Email" label-for="email" invalid-feedback="Email is required">
-            <b-form-input
-              class="borderColor"
-              id="email"
-               v-model="TrackingNumber"
-              :state="nameState"
-              required
-              placeholder="you@gmail.com"
-            ></b-form-input>
-          </b-form-group>
+          <p>{{TrackingNumber}}</p>
         </form>
       </b-modal>
     </div>
@@ -317,7 +270,7 @@
 
 <script>
 // import swal from "sweetalerts";
-import Swal from 'sweetalert2'
+// import Swal from 'sweetalert2'
 // import ROUTER from "router";
 export default {
   name: "authForm",
@@ -325,51 +278,92 @@ export default {
     return {
       show: false,
       shows: false,
-      UpdateauthDocument:"______________",
-      UpdateTypeofId:"[ID TYPE]",
-      UpdateIdNumber:"[ID Number]",
-      UpdateSenderNames:"_____________",
+      UpdateauthDocument: "______________",
+      UpdateTypeofId: "[ID TYPE]",
+      UpdateIdNumber: "[ID Number]",
+      UpdateSenderNames: "_____________",
       UpdateSenderName: "[SenderName]",
       UpdateyourAddress: "[Address]",
       Updatezip: "[State/ ZIP Code]",
-      UpdatecurrentDate: "[Date]",
-      UpdatecurrentDates:"______________",
+      UpdatecurrentDate: new Date(),
       UpdatedueDate: "[DueDate]",
-      UpdatedueDates:"_______________",
+      UpdatedueDates: "_______________",
       UpdaterecName: "[Recipients name]",
-      UpdaterecNames:"_______________",
+      UpdaterecNames: "_______________",
       UpdaterecAddress: "[Address]",
       UpdaterecZip: "[State/ ZIP Code]",
       Updatesubject: "[Subject]",
       Updatedoc: "[DOCS]",
-      TrackingNumber:'',
-      nameState: null,
-      submittedNames: [],
-      modalShow: false
+      TrackingNumber: " ",
+      SenderName: "",
+      yourAddress: "",
+      zip: "",
+      dueDate: "",
+      recName: "",
+      recAddress: "",
+      recZip: "",
+      subject: "",
+      doc: "",
+      IdentityId: "",
+      numberId: ""
     };
   },
   component: {},
+  mounted() {
+    this.UpdatecurrentDate = new Date()
+      .toJSON()
+      .slice(0, 10)
+      .replace(/-/g, "/");
+    console.log(this.UpdatecurrentDate);
+  },
   methods: {
-    generateTrackNumber: function(){
-       //swal("Yeah!",Math.floor(1000 + Math.random() * 9000).toString(),"Success!!");
-      //this.TrackingNumber=Math.floor(1000 + Math.random() * 9000);
-      //console.log("Tracking id:"+Math.floor(1000 + Math.random() * 9000))
-      Swal.fire({
-              position: 'top-end',
-              icon: 'success',
-              title: 'Your work has been saved',
-              showConfirmButton: false,
-              timer: 3500
-            })
+    generateTrackNumber: function() {
+      const a = "ABCD".split("")[Math.floor(Math.random() * 4)];
+      const b = "EFGH".split("")[Math.floor(Math.random() * 4)];
+      const c = "IJKL".split("")[Math.floor(Math.random() * 4)];
+      const d = "MNOP".split("")[Math.floor(Math.random() * 4)];
+      const e = "QRST".split("")[Math.floor(Math.random() * 4)];
+      const f = "UVWXYZ".split("")[Math.floor(Math.random() * 6)];
+      var tracknum1 = Math.floor(10 + Math.random() * 90).toString();
+      var tracknum2 = Math.floor(10 + Math.random() * 90).toString();
+      var tracknum3 = Math.floor(10 + Math.random() * 90).toString();
+      this.TrackingNumber =
+        tracknum1 +
+        "-" +
+        (a + b) +
+        "-" +
+        tracknum2 +
+        "-" +
+        (c + d) +
+        "-" +
+        tracknum3 +
+        "-" +
+        (e + f);
+      console.log("trackingnumber:" + this.TrackingNumber);
     },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
-      this.nameState = valid ? "valid" : "invalid";
       return valid;
     },
     resetModal() {
-      this.yourName = "";
-      this.nameState = null;
+      this.SenderName = "";
+      this.yourAddress = "";
+      this.zip = "";
+      this.dueDate = "";
+      this.dueDate = "";
+      this.recName = "";
+      this.recName = "";
+      this.recAddress = "";
+      this.recZip = "";
+      this.subject = "";
+      this.doc = "";
+      this.IdentityId = "";
+      this.numberId = "";
+    },
+    GOTOACTIVITIES() {
+      console.log("This will go to Activities or Notifications!");
+      // var notify = {};
+      // axios.post("http://localhost:3000/pusher", notify);
     },
     handleOk(bvModalEvt) {
       // Prevent modal from closing
@@ -381,43 +375,27 @@ export default {
     handleSubmit() {
       // Exit when the form isn't valid
       if (!this.checkFormValidity()) {
-        // swal("No", "Please input all fields!", "Repeat");
         return;
-      }
-      else{
-      console.log("{The modal is successfully tested!!!!!!!!authorization letter!!!!}" );
+      } else {
+        console.log(
+          "{The modal is successfully tested  for fill-up in authorization letter!}"
+        );
         this.UpdateSenderName = this.SenderName;
-        this.UpdateSenderNames=this.SenderName;
+        this.UpdateSenderNames = this.SenderName;
         this.UpdateyourAddress = this.yourAddress;
         this.Updatezip = this.zip;
-        this.UpdatecurrentDate = this.currentDate;
-        this.UpdatecurrentDates = this.currentDate;
         this.UpdatedueDate = this.dueDate;
         this.UpdatedueDates = this.dueDate;
         this.UpdaterecName = this.recName;
-        this.UpdaterecNames= this.recName;
+        this.UpdaterecNames = this.recName;
         this.UpdaterecAddress = this.recAddress;
         this.UpdaterecZip = this.recZip;
         this.Updatesubject = this.subject;
         this.Updatedoc = this.doc;
-        this.UpdateauthDocument=this.doc;
-        this.UpdateTypeofId=this.IdentityId;
-        this.UpdateIdNumber=this.IDNUMBER;
-        // swal("yeah", "Successfully !", "Okay!");
-        //BLANK THE AREA OR FIELD
-        // this.SenderName =" ";
-        // this.yourAddress =" ";
-        // this.zip =" ";
-        // this.currentDate =" ";
-        // this.dueDate =" ";
-        // this.recName =" ";
-        // this.recAddress =" ";
-        // this.recZip =" ";
-        // this.subject =" ";
-        // this.doc =" ";
+        this.UpdateauthDocument = this.doc;
+        this.UpdateTypeofId = this.IdentityId;
+        this.UpdateIdNumber = this.numberId;
       }
-      // Push the name to submitted names
-      //this.submittedNames.push(this.yourName);
       // Hide the modal manually
       this.$nextTick(() => {
         this.$refs.modal.hide();

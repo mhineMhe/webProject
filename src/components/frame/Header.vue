@@ -13,9 +13,8 @@
               <b-form-input  class="input"  v-if="auth.user === null" v-model="form.password" type="password" required placeholder="Password"></b-form-input>&nbsp;&nbsp;&nbsp;
               <b-button v-on:click="onSubmit"  v-if="auth.user === null" id="login">Login</b-button>
 
-              <i v-if="auth.user !== null" class="fa fa-fw fa-home fa-2x" v-b-toggle.collapse-2></i>&nbsp;&nbsp;&nbsp;
-              <!-- <i v-if="auth.user !== null" class="fas fa-bell fa-2x"></i>&nbsp;&nbsp;&nbsp; -->
-              <i v-if="auth.user !== null" class="fas fa-user-circle fa-2x"></i>&nbsp;&nbsp;&nbsp;
+               <i v-if="this.user !== null" v-on:click="redirect('/dashboard')" class="fa fa-fw fa-home fa-2x" v-b-toggle.collapse-2></i>&nbsp;&nbsp;&nbsp;
+              <i v-if="this.user !== null" v-on:click="redirect('/personalinformation')" class="fas fa-user-circle fa-2x"></i>&nbsp;&nbsp;&nbsp;
              
           </b-navbar-nav>
         </b-collapse>
@@ -24,12 +23,13 @@
   </template>
 
   <script>
-  // import ROUTER from "router";
+  import ROUTER from "router";
   import AUTH from 'services/auth'
   export default {
     
     data() {
       return {
+        user: "",
         auth: AUTH,
         form:{
           email: "",
@@ -38,9 +38,9 @@
       };
     },
     methods: {
-      // redirect(route) {
-      //   ROUTER.push(route);
-      // }
+      redirect(route) {
+        ROUTER.push(route);
+      },
       onSubmit(e){
         e.preventDefault();
         AUTH.login(this.form.email, this.form.password);

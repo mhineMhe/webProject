@@ -40,7 +40,13 @@
           </b-tab>
       <!-- Tab 2 -->
           <b-tab title="Activities">
-            <b-card-text>Tab contents 2</b-card-text>
+            <div v-for="(item,index) in notifications" :key="index">
+              <b-card>
+                <b-card-text>{{item.account_id}}</b-card-text>
+                <b-card-text>{{item.fName}}</b-card-text>
+                <b-card-text>{{item.lName}}</b-card-text>
+              </b-card>
+            </div>
           </b-tab>
           <!-- TAb 3 -->
           <b-tab title="Track">
@@ -120,15 +126,16 @@ const axios = require('axios')
 // import { mapGetters } from 'vuex'
 export default {
    mounted(){
-     setTimeout( () => {
-       this.retrieve( response => {
-         if(response.data.partner.length > 0){
-          this.data = response.data.partner
-        }else{
-          this.data = []
-        }
-       })
-     }, 100)
+      this.managePusher();
+      setTimeout( () => {
+        this.retrieve( response => {
+          if(response.data.partner.length > 0){
+            this.data = response.data.partner
+          }else{
+            this.data = []
+          }
+        })
+      }, 100)
 
   },
   computed: {
@@ -141,8 +148,8 @@ export default {
   data() {
     return {
       data: [],
-      // searchAdd: [],
-      search: ""
+      search: "",
+      notifications: []
     };
   },
   component: {
@@ -156,6 +163,17 @@ export default {
       })
       .catch(function (error) {
         console.log(error);
+      });
+    },
+    managePusher(){
+      let user = {
+        account_id: 1
+      }
+      var channel = this.$pusher.subscribe('my-channel');
+      channel.bind('my-event', ({notifications}) => {
+        if(parseInt(notifications.account_id) == user.account_id){
+          this.notifications.unshift(notifications)
+        }
       });
     },
     redirect(route){

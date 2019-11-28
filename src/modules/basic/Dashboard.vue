@@ -135,7 +135,10 @@ export default {
         }
        })
      }, 100)
+<<<<<<< HEAD
      
+=======
+>>>>>>> 76acc2c4b6575efa108cde188349af7b59ca0261
   },
   data() {
     return {

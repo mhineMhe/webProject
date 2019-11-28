@@ -35,7 +35,11 @@
           email: "",
           password: ""
         },
+<<<<<<< HEAD
         user: localStorage.getItem("user")
+=======
+        user: false
+>>>>>>> 76acc2c4b6575efa108cde188349af7b59ca0261
       };
     },
     methods: {
@@ -45,8 +49,19 @@
       onSubmit(e){
         e.preventDefault();
         AUTH.login(this.form.email, this.form.password);
+        this.user = localStorage.getItem("user")
+        
+      },
+      getUserValue(e){
+        e.preventDefault();
+        if(localStorage.getItem("user") !== null){
+          this.user = true
+        }else{
+          this.user = false
+        }
       }
-    }
+    },
+    
   };
   </script>
 

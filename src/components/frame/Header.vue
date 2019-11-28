@@ -9,13 +9,13 @@
             <!-- <b-nav-item v-on:click="redirect('/register')" v-if="auth.user === null">Sign Up</b-nav-item>
             <b-nav-item v-on:click="redirect('/login')" v-if="auth.user === null">Login</b-nav-item> -->
             <!-- <b-button size="sm" class="my-2 my-sm-0" type="submit" v-on:click="redirect('/register')"  id="register">Register</b-button>&nbsp;&nbsp;&nbsp; -->
-              <b-form-input class="input"  v-if="auth.user === null" v-model="form.email" type="email" required placeholder="Email"></b-form-input>&nbsp;&nbsp;&nbsp;
-              <b-form-input  class="input"  v-if="auth.user === null" v-model="form.password" type="password" required placeholder="Password"></b-form-input>&nbsp;&nbsp;&nbsp;
-              <b-button v-on:click="onSubmit"  v-if="auth.user === null" id="login">Login</b-button>
+              <b-form-input class="input"  v-if="this.user === null" v-model="form.email" type="email" required placeholder="Email"></b-form-input>&nbsp;&nbsp;&nbsp;
+              <b-form-input  class="input"  v-if="this.user === null" v-model="form.password" type="password" required placeholder="Password"></b-form-input>&nbsp;&nbsp;&nbsp;
+              <b-button v-on:click="onSubmit"  v-if="this.user === null" id="login">Login</b-button>
 
-              <i v-if="auth.user !== null" class="fa fa-fw fa-home fa-2x" v-b-toggle.collapse-2></i>&nbsp;&nbsp;&nbsp;
+              <i v-if="this.user !== null" class="fa fa-fw fa-home fa-2x" v-b-toggle.collapse-2></i>&nbsp;&nbsp;&nbsp;
               <!-- <i v-if="auth.user !== null" class="fas fa-bell fa-2x"></i>&nbsp;&nbsp;&nbsp; -->
-              <i v-if="auth.user !== null" class="fas fa-user-circle fa-2x"></i>&nbsp;&nbsp;&nbsp;
+              <i v-if="this.user !== null" class="fas fa-user-circle fa-2x"></i>&nbsp;&nbsp;&nbsp;
              
           </b-navbar-nav>
         </b-collapse>
@@ -34,7 +34,8 @@
         form:{
           email: "",
           password: ""
-        }
+        },
+        user: false
       };
     },
     methods: {
@@ -44,8 +45,19 @@
       onSubmit(e){
         e.preventDefault();
         AUTH.login(this.form.email, this.form.password);
+        this.user = localStorage.getItem("user")
+        
+      },
+      getUserValue(e){
+        e.preventDefault();
+        if(localStorage.getItem("user") !== null){
+          this.user = true
+        }else{
+          this.user = false
+        }
       }
-    }
+    },
+    
   };
   </script>
 

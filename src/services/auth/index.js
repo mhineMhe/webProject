@@ -37,6 +37,7 @@ export default {
                 // console.log(response.data.part.partneredId)
                 if(response.data.user == null && response.data.part.partneredId != null){
                     ROUTER.push('/dashboardPartneredUser');
+                    
                 }else if(response.data.user != null){
                     ROUTER.push('/dashboard');
                 }

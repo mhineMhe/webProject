@@ -6,12 +6,12 @@
           <!-- Tab 1 -->
           <b-tab title="Online Users" active>
             <b-form-group>
-              <i id="searchIcon" style="cursor: pointer" class="fa fa-search fa_custom fa-2x" @click="searchAddress()"></i>
+              <i id="searchIcon" style="cursor: pointer" class="fa fa-search fa_custom fa-2x"></i>
               <b-form-input id="searchBar" required placeholder="Search Location" v-model="search"></b-form-input>
             </b-form-group>
             <b-container fluid>
                 <b-row>
-                    <b-col cols="3" v-for="(item, index) in data" :key="index">
+                    <b-col cols="3" v-for="(item, index) in filterData" :key="index">
                         <center>
                             <div id="card">
                                     <b-row no-gutters>
@@ -116,7 +116,8 @@
 
 <script>
 import ROUTER from "router"
-const axios = require('axios');
+const axios = require('axios')
+// import { mapGetters } from 'vuex'
 export default {
    mounted(){
      setTimeout( () => {
@@ -129,16 +130,13 @@ export default {
        })
      }, 100)
 
-    //   setTimeout( () => {
-    //    this.searchAddress( response => {
-    //      if(response.data.partners.length > 0){
-    //       this.data = response.data.partners
-    //     }else{
-    //       this.data = []
-    //     }
-    //    })
-    //  }, 100)
-     
+  },
+  computed: {
+      filterData () {
+          return this.data.filter( data => {
+              return !this.search || data.address.toLowerCase().includes(this.search.toLowerCase())
+      })
+    }
   },
   data() {
     return {
@@ -163,6 +161,7 @@ export default {
     redirect(route){
       ROUTER.push(route);
     },
+    
     // searchAddress(callback){
     //   axios.post('http://localhost:3000/dashboardSearch/'+ this.search)
     //     .then(function (response) {
@@ -173,5 +172,5 @@ export default {
     //     });
     // }
   }
-};
+}
 </script>

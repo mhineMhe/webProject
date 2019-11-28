@@ -125,7 +125,7 @@
 import AUTH from "services/auth";
 import { required, email, sameAs } from "vuelidate/lib/validators";
 // const axios = require('axios');
-var passwordHash = require('password-hash');
+// var passwordHash = require('password-hash');
 export default {
   data() {
     return {
@@ -136,7 +136,7 @@ export default {
         password: "",
         confirmPassword: ""
       },
-      show: true,
+      show: false,
       passwordVisible: false,
       submitted: false
     };
@@ -174,16 +174,16 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.submitted = true;
-      var encryptPass = passwordHash.generate(this.form.password);
-      var encryptEmail = passwordHash.generate(this.form.email);
-      var encryptUserName = passwordHash.generate(this.form.username);
+      // var encryptPass = passwordHash.generate(this.form.password);
+      // var encryptEmail = passwordHash.generate(this.form.email);
+      // var encryptUserName = passwordHash.generate(this.form.username);
       
       this.$v.$touch();
       if (this.$v.$invalid) {
         return;
       }
       // alert("SUCCESS!! :-)\n\n" + JSON.stringify(this.form))
-      alert(encryptPass +" "+ encryptEmail +" "+ encryptUserName);
+      // alert(encryptPass +" "+ encryptEmail +" "+ encryptUserName);
       AUTH.register(this.form.username, this.form.email, this.form.password);
     }
   }

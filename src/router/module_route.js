@@ -3,7 +3,7 @@
 let beforeEnter = (to, from, next) => {
     // AUTH.currentPath = to.path
     if (to.meta.tokenRequired === true) {
-        if (localStorage.getItem("user")) {
+        if (localStorage.getItem("user") || localStorage.getItem("partner")) {
             next()
         } else {
             next({ path: '/Homepage' })

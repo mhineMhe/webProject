@@ -9,7 +9,7 @@
               <b-card-text class="center">
                 <b>AUTHORIZATION LETTER</b>
               </b-card-text>
-              <br />
+              <br>
               <b-card-text id="senderName" class="center">
                 <p>{{UpdateSenderName}}</p>
               </b-card-text>
@@ -19,13 +19,15 @@
               <b-card-text class="center">
                 <p>{{Updatezip}}</p>
               </b-card-text>
-              <br />
-              <br />
+              <br>
+              <br>
 
               <b-card-text>
-                <p><b>{{UpdatecurrentDate}}</b></p>
+                <p>
+                  <b>{{UpdatecurrentDate}}</b>
+                </p>
               </b-card-text>
-              <br />
+              <br>
 
               <b-card-text>
                 <p>{{UpdaterecName}}</p>
@@ -34,10 +36,7 @@
               <b-card-text class="side">
                 <p>{{UpdaterecZip}}</p>
               </b-card-text>
-              <b-card-text class="side">
-                <p>{{Updatesubject}}</p>
-              </b-card-text>
-              <br />
+              <br>
 
               <b-card-text class="side">
                 <b>To whom it may concern:</b>
@@ -51,21 +50,25 @@
                 </p>
               </b-card-text>
               <b-card-text>
-                <p>Authorized Person:{{UpdaterecNames}}</p>
+                <p>Authorized Person:{{ UpdaterecNames}}</p>
               </b-card-text>
               <b-card-text>
-                <p>Identity Type:{{UpdateTypeofId}}</p>
+                <p>Identity Type:{{ UpdateTypeofId}}</p>
               </b-card-text>
               <b-card-text>
-                <p>ID Number:{{UpdateIdNumber}}</p>
+                <p>ID Number:{{ UpdateIdNumber}}</p>
               </b-card-text>
               <b-card-text>
-                <p>Scoped of Authorization:{{Updatedoc}}</p>
+                <p>Scoped of Authorization:{{ Updatedoc}}</p>
               </b-card-text>
               <b-card-text>
-                <p>The Permission to processes the documents in my name starts on <b>{{UpdatecurrentDate}}</b> and ends on {{UpdatedueDates}}.</p>
+                <p>
+                  The Permission to processes the documents in my name starts on
+                  <b>{{UpdatecurrentDate}}</b>
+                  and ends on {{UpdatedueDates}}.
+                </p>
               </b-card-text>
-              <br />
+              <br>
 
               <b-card-text class="side">Sincerely,</b-card-text>
               <b-card-text class="side">
@@ -73,8 +76,8 @@
               </b-card-text>
             </b-card>
           </div>
-          <br />
-          <br />
+          <br>
+          <br>
           <div>
             <b-button v-b-modal.modalForm id="fillUp" @click="show=true">Fill Up</b-button>
             <b-button
@@ -196,16 +199,6 @@
             placeholder="Recipient's State/Zip Code"
           ></b-form-input>
         </b-form-group>
-        <!-- Subject -->
-        <b-form-group label="Subject" label-for="subject" invalid-feedback="Subject is required">
-          <b-form-input
-            class="borderColor"
-            id="subject"
-            v-model="subject"
-            required
-            placeholder="Subject"
-          ></b-form-input>
-        </b-form-group>
         <!-- Types of Documents -->
         <b-form-group
           label="Types of Document/s"
@@ -271,7 +264,8 @@
 <script>
 // import swal from "sweetalerts";
 // import Swal from 'sweetalert2'
-// import ROUTER from "router";
+import ROUTER from "router";
+const axios = require('axios');
 export default {
   name: "authForm",
   data() {
@@ -286,15 +280,13 @@ export default {
       UpdateyourAddress: "[Address]",
       Updatezip: "[State/ ZIP Code]",
       UpdatecurrentDate: new Date(),
-      UpdatedueDate: "[DueDate]",
       UpdatedueDates: "_______________",
       UpdaterecName: "[Recipients name]",
       UpdaterecNames: "_______________",
       UpdaterecAddress: "[Address]",
       UpdaterecZip: "[State/ ZIP Code]",
-      Updatesubject: "[Subject]",
       Updatedoc: "[DOCS]",
-      TrackingNumber: " ",
+      TrackingNumber: "",
       SenderName: "",
       yourAddress: "",
       zip: "",
@@ -302,20 +294,51 @@ export default {
       recName: "",
       recAddress: "",
       recZip: "",
-      subject: "",
       doc: "",
       IdentityId: "",
       numberId: ""
     };
   },
-  component: {},
-  mounted() {
+  mounted(){
+    if(localStorage.getItem("senderName")){
+      console.log(localStorage.getItem("senderName"))
+      this.UpdateSenderName = localStorage.getItem("senderName");
+      this.UpdateSenderNames = localStorage.getItem("senderNameUnder");
+      this.UpdateyourAddress = localStorage.getItem("senderAddress");
+      this.Updatezip = localStorage.getItem("senderZip");
+      this.UpdatedueDates = localStorage.getItem("dueDate");
+      this.UpdaterecName = localStorage.getItem("receiverName");
+      this.UpdaterecNames = localStorage.getItem("receiverNameUnder");
+      this.UpdaterecAddress = localStorage.getItem("receiverAddress");
+      this.UpdaterecZip = localStorage.getItem("receiverZip");
+      this.Updatedoc = localStorage.getItem("documents");
+      this.UpdateauthDocument = localStorage.getItem("documentsUpper");
+      this.UpdateTypeofId = localStorage.getItem("typeId");
+      this.UpdateIdNumber = localStorage.getItem("idNumber");
+    }else{
+      this.UpdateauthDocument= "______________",
+      this.UpdateTypeofId= "[ID TYPE]",
+      this.UpdateIdNumber= "[ID Number]",
+      this.UpdateSenderNames= "_____________",
+      this.UpdateSenderName= "[SenderName]",
+      this.UpdateyourAddress= "[Address]",
+      this.Updatezip= "[State/ ZIP Code]",
+      this.UpdatecurrentDate= new Date(),
+      this.UpdatedueDates= "_______________",
+      this.UpdaterecName= "[Recipients name]",
+      this.UpdaterecNames= "_______________",
+      this.UpdaterecAddress= "[Address]",
+      this.UpdaterecZip= "[State/ ZIP Code]",
+      this.Updatedoc= "[DOCS]"
+    }
+
     this.UpdatecurrentDate = new Date()
       .toJSON()
       .slice(0, 10)
       .replace(/-/g, "/");
     console.log(this.UpdatecurrentDate);
   },
+  component: {},
   methods: {
     generateTrackNumber: function() {
       const a = "ABCD".split("")[Math.floor(Math.random() * 4)];
@@ -350,22 +373,87 @@ export default {
       this.yourAddress = "";
       this.zip = "";
       this.dueDate = "";
-      this.dueDate = "";
-      this.recName = "";
       this.recName = "";
       this.recAddress = "";
       this.recZip = "";
-      this.subject = "";
       this.doc = "";
       this.IdentityId = "";
       this.numberId = "";
     },
     GOTOACTIVITIES() {
       console.log("This will go to Activities or Notifications!");
+      var allData = {
+        trackingNum: this.TrackingNumber,
+        senderName: localStorage.getItem("senderName"),
+        senderAddress: localStorage.getItem("senderAddress"),
+        senderZipCode: localStorage.getItem("senderZip"),
+        currentDate: this.UpdatecurrentDate,
+        receiverAddress: localStorage.getItem("receiverAddress"),
+        receiverName: localStorage.getItem("receiverName"),
+        receiverZipCode: localStorage.getItem("receiverZip"),
+        dueDate: localStorage.getItem("dueDate"),
+        documentType: localStorage.getItem("documents"),
+        identityType: localStorage.getItem("typeId"),
+        idNumber: localStorage.getItem("idNumber")
+      }
+      axios
+        .post("http://localhost:3000/authLetter", allData)
+        .then(response => {
+          console.log(response)
+          if(localStorage.getItem("partner")){
+              ROUTER.push('/dashboardPartneredUser');
+          }else{
+              ROUTER.push('/dashboard');
+          }
+          console.log(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
       // var notify = {};
       // axios.post("http://localhost:3000/pusher", notify);
+
+        localStorage.removeItem("senderName");
+        localStorage.removeItem("senderNameUnder");
+        localStorage.removeItem("senderAddress");
+        localStorage.removeItem("senderZip");
+        localStorage.removeItem("dueDate");
+        localStorage.removeItem("receiverName");
+        localStorage.removeItem("receiverNameUnder");
+        localStorage.removeItem("receiverAddress");
+        localStorage.removeItem("receiverZip");
+        localStorage.removeItem("documents");
+        localStorage.removeItem("documentsUpper");
+        localStorage.removeItem("typeId");
+        localStorage.removeItem("idNumber");
     },
     handleOk(bvModalEvt) {
+      localStorage.removeItem("senderName");
+      localStorage.removeItem("senderNameUnder");
+      localStorage.removeItem("senderAddress");
+      localStorage.removeItem("senderZip");
+      localStorage.removeItem("dueDate");
+      localStorage.removeItem("receiverName");
+      localStorage.removeItem("receiverNameUnder");
+      localStorage.removeItem("receiverAddress");
+      localStorage.removeItem("receiverZip");
+      localStorage.removeItem("documents");
+      localStorage.removeItem("documentsUpper");
+      localStorage.removeItem("typeId");
+      localStorage.removeItem("idNumber");
+      localStorage.setItem("senderName", this.SenderName)
+      localStorage.setItem("senderNameUnder", this.SenderName)
+      localStorage.setItem("senderAddress", this.yourAddress)
+      localStorage.setItem("senderZip", this.zip)
+      localStorage.setItem("dueDate", this.dueDate)
+      localStorage.setItem("receiverName", this.recName)
+      localStorage.setItem("receiverNameUnder", this.recName)
+      localStorage.setItem("receiverAddress", this.recAddress)
+      localStorage.setItem("receiverZip", this.recZip)
+      localStorage.setItem("documents", this.doc)
+      localStorage.setItem("documentsUpper", this.doc)
+      localStorage.setItem("typeId", this.IdentityId)
+      localStorage.setItem("idNumber", this.numberId)
       // Prevent modal from closing
       bvModalEvt.preventDefault();
       // Trigger submit handler
@@ -380,21 +468,19 @@ export default {
         console.log(
           "{The modal is successfully tested  for fill-up in authorization letter!}"
         );
-        this.UpdateSenderName = this.SenderName;
-        this.UpdateSenderNames = this.SenderName;
-        this.UpdateyourAddress = this.yourAddress;
-        this.Updatezip = this.zip;
-        this.UpdatedueDate = this.dueDate;
-        this.UpdatedueDates = this.dueDate;
-        this.UpdaterecName = this.recName;
-        this.UpdaterecNames = this.recName;
-        this.UpdaterecAddress = this.recAddress;
-        this.UpdaterecZip = this.recZip;
-        this.Updatesubject = this.subject;
-        this.Updatedoc = this.doc;
-        this.UpdateauthDocument = this.doc;
-        this.UpdateTypeofId = this.IdentityId;
-        this.UpdateIdNumber = this.numberId;
+        this.UpdateSenderName = localStorage.getItem("senderName");
+        this.UpdateSenderNames = localStorage.getItem("senderNameUnder");
+        this.UpdateyourAddress = localStorage.getItem("senderAddress");
+        this.Updatezip = localStorage.getItem("senderZip");
+        this.UpdatedueDates = localStorage.getItem("dueDate");
+        this.UpdaterecName = localStorage.getItem("receiverName");
+        this.UpdaterecNames = localStorage.getItem("receiverNameUnder");
+        this.UpdaterecAddress = localStorage.getItem("receiverAddress");
+        this.UpdaterecZip = localStorage.getItem("receiverZip");
+        this.Updatedoc = localStorage.getItem("documents");
+        this.UpdateauthDocument = localStorage.getItem("documentsUpper");
+        this.UpdateTypeofId = localStorage.getItem("typeId");
+        this.UpdateIdNumber = localStorage.getItem("idNumber");
       }
       // Hide the modal manually
       this.$nextTick(() => {

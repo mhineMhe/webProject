@@ -22,7 +22,7 @@
                                         <b-card-body>
                                             <label style="border: 2px solid">{{item.fname + " " + item.lname}}</label><br>
                                             <label style="border: 2px solid">{{item.address}}</label><br>
-                                            <b-button v-on:click="redirect('/authorizationForm')" id="connectBtn">Connect</b-button>
+                                            <b-button v-on:click="redirect('/authorizationForm', index)" id="connectBtn">Connect</b-button>
                                         </b-card-body>
                                     </b-col>
                                     </b-row>
@@ -40,11 +40,9 @@
           </b-tab>
       <!-- Tab 2 -->
           <b-tab title="Activities">
-            <div v-for="(item,index) in notifications" :key="index">
+            <div v-for="(item,index) in notify" :key="index">
               <b-card>
-                <b-card-text>{{item.account_id}}</b-card-text>
-                <b-card-text>{{item.fName}}</b-card-text>
-                <b-card-text>{{item.lName}}</b-card-text>
+                <b-card-text>{{item.trackingNum}}</b-card-text>
               </b-card>
             </div>
           </b-tab>
@@ -149,7 +147,7 @@ export default {
     return {
       data: [],
       search: "",
-      notifications: []
+      notify: []
     };
   },
   component: {
@@ -167,16 +165,17 @@ export default {
     },
     managePusher(){
       let user = {
-        account_id: 1
+        sendEmail: localStorage.getItem("receiverEmail")
       }
       var channel = this.$pusher.subscribe('my-channel');
-      channel.bind('my-event', ({notifications}) => {
-        if(parseInt(notifications.account_id) == user.account_id){
-          this.notifications.unshift(notifications)
+      channel.bind('my-event', ({notify}) => {
+        if(parseInt(notify.recemail) == user.sendEmail){
+          this.notify.unshift(notify)
         }
       });
     },
-    redirect(route){
+    redirect(route, index){
+      localStorage.setItem("receiverEmail", this.filterData[index].email)
       ROUTER.push(route);
     },
     

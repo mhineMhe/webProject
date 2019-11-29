@@ -410,8 +410,31 @@ export default {
         .catch(function (error) {
             console.log(error);
         });
-      // var notify = {};
-      // axios.post("http://localhost:3000/pusher", notify);
+      // var receiverEmail;
+      var recEmail = localStorage.getItem("receiverEmail")
+      // axios.post("http://localhost:3000/onePartner/" + recEmail)
+      //   .then(response => {
+          
+      //     console.log(response.data.partner.email)
+      //     console.log(response)
+      //     // receiverEmail = response.data.email
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //   })
+      var notify = {
+        trackingNum: this.TrackingNumber,
+        sendemail: localStorage.getItem("email"),
+        recemail: recEmail
+      }
+      console.log(notify)
+      axios.post("http://localhost:3000/pusher", notify)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(err => {
+          console.log(err)
+        })
 
         localStorage.removeItem("senderName");
         localStorage.removeItem("senderNameUnder");

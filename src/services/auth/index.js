@@ -17,7 +17,7 @@ export default {
         }
         axios.post('http://localhost:3000/users', data)
             .then(function (response) {
-                localStorage.setItem("user", username)
+                localStorage.setItem("email", email)
                 ROUTER.push('/dashboard')
                 console.log(response);
             })
@@ -33,6 +33,7 @@ export default {
         }
         axios.post('http://localhost:3000/login', data)
             .then(function (response) {
+                localStorage.setItem("email", email)
                 console.log(response.data.part.partneredId)
                 if(response.data.user == null && response.data.part.partneredId != null){
                     localStorage.setItem("partner", "dashboardPartneredUser")

@@ -23,7 +23,7 @@
                                         <b-card-body>
                                             <label style="border: 2px solid">{{item.fname + " " + item.lname}}</label><br>
                                             <label style="border: 2px solid">{{item.address}}</label><br>
-                                            <b-button v-on:click="redirect('/authorizationForm')" id="connectBtn">Connect</b-button>
+                                            <b-button v-on:click="redirect('/authorizationForm', index)" id="connectBtn">Connect</b-button>
                                         </b-card-body>
                                     </b-col>
                                     </b-row>
@@ -41,7 +41,11 @@
           </b-tab>
       <!-- Tab 2 -->
           <b-tab title="Activities">
-            <b-card-text>Tab contents 2</b-card-text>
+            <div v-for="(item,index) in notify" :key="index">
+              <b-card>
+                <b-card-text>{{item.trackingNum}}</b-card-text>
+              </b-card>
+            </div>
           </b-tab>
           <!-- TAb 3 -->
           <b-tab title="Track">
@@ -147,6 +151,10 @@
 import ROUTER from "router"
 const axios = require('axios');
 export default {
+  created(){
+    console.log(this.notify)
+    this.managePusher();
+  },
    mounted(){
      setTimeout( () => {
        this.retrieve( response => {
@@ -162,6 +170,7 @@ export default {
     return {
       data: [],
       search: "",
+      notify: []
     };
   },
   component: {
@@ -185,9 +194,33 @@ export default {
       });
     },
 
-    redirect(route){
+    managePusher(){
+      this.$pusher.subscribe('form')
+      this.$pusher.bind('auth', (data) => {
+        console.log(data.notify)
+        this.notify.unshift(data.notify);
+      });
+      // let user = {
+      //   receiveEmail: localStorage.getItem("receiverEmail")
+      // }
+      // console.log("HOYYYY" + user.receiveEmail)
+      // var channel = this.$pusher.subscribe('my-channel');
+      // channel.bind('my-event', (notify) => {
+      //   console.log("BUANG" + notify.recemail)
+      //   if(notify.recemail == user.receiveEmail){
+      //     this.notify.unshift(notify)
+      //   }
+      // });
+    },
+
+    redirect(route, index){
+      localStorage.setItem("receiverEmail", this.filterData[index].email)
       ROUTER.push(route);
-    }
+    },
+    
+    // doIt(index){
+    //   console.log(this.filterData[index])
+    // }
   }
 };
 </script>

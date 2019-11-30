@@ -6,7 +6,7 @@
           <!-- Tab 1 -->
           <b-tab title="Online Users" active>
             <b-form-group>
-              <i id="searchIcon" class="fa fa-search fa_custom fa-2x"></i>
+              <i id="searchIcon" style="cursor: pointer" class="fa fa-search fa_custom fa-2x"></i>
               <b-form-input id="searchBar" required placeholder="Search Location" v-model="search"></b-form-input>
             </b-form-group>
 
@@ -55,10 +55,15 @@
                 </b-col>
                 <b-col cols="8">
                    <b-form-group label="Tracking No.">
-                      <i id="searchIcon" class="fa fa-search fa_custom fa-2x"></i>
-                      <b-form-input id="tracking" required placeholder="e.g 123456789012"></b-form-input>
+                      <i id="searchIcon" class="fa fa-search fa_custom fa-2x" style="cursor: pointer" @click="searchTrackNum()"></i>
+                      <b-form-input id="tracking" required placeholder="e.g 123456789012" v-model="searchTrack"></b-form-input>
                   </b-form-group>
                   <b-card id="cardTracking" scrollable>
+                      <b-row no-gutters v-for="(item, index) in trackingData" :key="index">
+                        <label style="font-size: 30px">{{item.sendTo}}</label><br><br>
+                        <label style="font-size: 30px">{{item.locationTo}}</label><br><br>
+                        <label style="font-size: 30px">{{item.date}}</label><br>
+                      </b-row>
                   </b-card>
                 </b-col>
                 <b-col cols="2">
@@ -67,29 +72,29 @@
             </b-container>
           </b-tab>
           <!-- Tab 4 -->
-          <b-tab title="Tracking Form">
+          <b-tab title="Tracking Form" @click="outputDate()">
             <b-container fluid>
               <b-row>
                 <b-col cols="1">
                 </b-col>
                 <b-col cols="9">
-                   <b-form-group label="Tracking No:  ">
-                      <b-form-input class="motif" required placeholder="Specific Location"></b-form-input>
+                   <b-form-group label="Tracking No: ">
+                      <b-form-input class="motif" required placeholder="Specific Location" v-model="trackNum"></b-form-input>
                   </b-form-group>
-                  <b-form-group label="To:">
-                      <b-form-input class="motif" type="email" required placeholder="Recepient's Email"></b-form-input>
+                  <b-form-group label="To: ">
+                      <b-form-input class="motif" type="email" required placeholder="Recepient's Email"  v-model="emailTo"></b-form-input>
                   </b-form-group>
-                  <b-form-group label="Location:">
-                      <b-form-input class="motif" required placeholder="Recepient's Location"></b-form-input>
+                  <b-form-group label="Location: ">
+                      <b-form-input class="motif" required placeholder="Recepient's Location"  v-model="location"></b-form-input>
                   </b-form-group>
-                  <b-form-group label="Date:">
-                      <b-form-input class="motif" required placeholder="Date"></b-form-input>
+                  <b-form-group label="Date: ">
+                      <b-form-input class="motif" required placeholder="Date" v-model="date" disabled></b-form-input>
                   </b-form-group>
                  
                 </b-col>
                 <b-col cols="2">
                     <br>
-                    <b-button block variant id="addBtn">Add</b-button>
+                    <b-button block variant id="addBtn" @click="addTracking()">Add</b-button>
                 </b-col>
               </b-row>
             </b-container>
@@ -170,7 +175,13 @@ export default {
     return {
       data: [],
       search: "",
-      notify: []
+      notify: [],
+      trackingData: [],
+      date: "",
+      emailTo: "",
+      location: "",
+      trackNum: "",
+      searchTrack: ""
     };
   },
   component: {
@@ -192,6 +203,21 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
+    },
+
+    searchTrackNum(){
+      console.log(this.searchTrack)
+      axios.post('http://localhost:3000/searchTrack/'+ this.searchTrack)
+        .then(response => {
+          if(response.data.track.length > 0){
+            this.trackingData = response.data.track
+          }else{
+            this.trackingData = []
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
 
     managePusher(){
@@ -218,9 +244,45 @@ export default {
       ROUTER.push(route);
     },
     
-    // doIt(index){
-    //   console.log(this.filterData[index])
-    // }
+    addTracking(){
+      var data = {
+        trackingNo: this.trackNum,
+        sendTo: this.emailTo,
+        locationTo: this.location,
+        date: this.date
+      }
+      axios.post('http://localhost:3000/validateTrackingNum/' + this.trackNum)
+        .then(response => {
+          console.log(response.data.trackingNo)
+          axios.post('http://localhost:3000/trackingInput', data)
+            .then(res => {
+              this.trackNum = "",
+              this.emailTo = "",
+              this.location = "",
+              this.date = ""
+              console.log(res.data)
+            })
+            .catch(err => {
+              this.trackNum = "",
+              this.emailTo = "",
+              this.location = "",
+              this.date = ""
+              console.log(err)
+            })
+        })
+        .catch(err => {
+          console.log(err)
+          alert("Invalid Tracking Number!!!")
+          this.trackNum = "",
+          this.emailTo = "",
+          this.location = "",
+          this.date = ""
+        })
+    },
+    outputDate(){
+      var d = new Date()
+      this.date = (d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + "     --time-- " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+    }
   }
 };
 </script>

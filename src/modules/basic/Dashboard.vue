@@ -54,7 +54,7 @@
                 </b-col>
                 <b-col cols="8">
                    <b-form-group label="Tracking No.">
-                      <i id="searchIcon" class="fa fa-search fa_custom fa-2x"></i>
+                      <i id="searchIcon" class="fa fa-search fa_custom fa-2x" style="cursor: pointer"></i>
                       <b-form-input id="tracking" required placeholder="e.g 123456789012"></b-form-input>
                   </b-form-group>
                   <b-card id="cardTracking" scrollable>

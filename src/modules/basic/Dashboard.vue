@@ -54,10 +54,15 @@
                 </b-col>
                 <b-col cols="8">
                    <b-form-group label="Tracking No.">
-                      <i id="searchIcon" class="fa fa-search fa_custom fa-2x" style="cursor: pointer"></i>
-                      <b-form-input id="tracking" required placeholder="e.g 123456789012"></b-form-input>
+                      <i id="searchIcon" class="fa fa-search fa_custom fa-2x" style="cursor: pointer" @click="searchTrackNum()"></i>
+                      <b-form-input id="tracking" required placeholder="e.g 123456789012" v-model="searchTrack"></b-form-input>
                   </b-form-group>
                   <b-card id="cardTracking" scrollable>
+                      <b-row no-gutters v-for="(item, index) in trackingData" :key="index">
+                        <label style="font-size: 30px">{{item.sendTo}}</label><br><br>
+                        <label style="font-size: 30px">{{item.locationTo}}</label><br><br>
+                        <label style="font-size: 30px">{{item.date}}</label><br>
+                      </b-row>
                   </b-card>
                 </b-col>
                 <b-col cols="2">
@@ -147,7 +152,9 @@ export default {
     return {
       data: [],
       search: "",
-      notify: []
+      notify: [],
+      trackingData: [],
+      searchTrack: ""
     };
   },
   component: {
@@ -162,6 +169,20 @@ export default {
       .catch(function (error) {
         console.log(error);
       });
+    },
+    searchTrackNum(){
+      console.log(this.searchTrack)
+      axios.post('http://localhost:3000/searchTrack/'+ this.searchTrack)
+        .then(response => {
+          if(response.data.track.length > 0){
+            this.trackingData = response.data.track
+          }else{
+            this.trackingData = []
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     managePusher(){
       let user = {
@@ -178,6 +199,41 @@ export default {
       localStorage.setItem("receiverEmail", this.filterData[index].email)
       ROUTER.push(route);
     },
+    addTracking(){
+      var data = {
+        trackingNo: this.trackNum,
+        sendTo: this.emailTo,
+        locationTo: this.location,
+        date: this.date
+      }
+      axios.post('http://localhost:3000/validateTrackingNum/' + this.trackNum)
+        .then(response => {
+          console.log(response.data.trackingNo)
+          axios.post('http://localhost:3000/trackingInput', data)
+            .then(res => {
+              this.trackNum = "",
+              this.emailTo = "",
+              this.location = "",
+              this.date = ""
+              console.log(res.data)
+            })
+            .catch(err => {
+              this.trackNum = "",
+              this.emailTo = "",
+              this.location = "",
+              this.date = ""
+              console.log(err)
+            })
+        })
+        .catch(err => {
+          console.log(err)
+          alert("Invalid Tracking Number!!!")
+          this.trackNum = "",
+          this.emailTo = "",
+          this.location = "",
+          this.date = ""
+        })
+    }
     
     // searchAddress(callback){
     //   axios.post('http://localhost:3000/dashboardSearch/'+ this.search)

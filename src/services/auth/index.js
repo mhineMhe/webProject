@@ -34,6 +34,7 @@ export default {
         axios.post('http://localhost:3000/login', data)
             .then(function (response) {
                 localStorage.setItem("email", email)
+                localStorage.setItem("show", true)
                 console.log(response.data.part.partneredId)
                 if(response.data.user == null && response.data.part.partneredId != null){
                     localStorage.setItem("partner", "dashboardPartneredUser")
@@ -50,8 +51,8 @@ export default {
         return null
     },
     logout() {
-        this.user = null
-        ROUTER.push('/login')
+        ROUTER.push('/Homepage')
+        localStorage.clear()
     },
     addCourse(course, year, schedule, room, teacher) {
         this.courses.push({

@@ -127,6 +127,9 @@ import { required, email, sameAs } from "vuelidate/lib/validators";
 // const axios = require('axios');
 // var passwordHash = require('password-hash');
 export default {
+  mounted(){
+    localStorage.setItem("show", false)
+  },
   data() {
     return {
       auth: AUTH,
@@ -138,7 +141,7 @@ export default {
       },
       show: false,
       passwordVisible: false,
-      submitted: false
+      submitted: false,
     };
   },
 

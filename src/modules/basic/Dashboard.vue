@@ -10,32 +10,29 @@
               <b-form-input id="searchBar" required placeholder="Search Location" v-model="search"></b-form-input>
             </b-form-group>
             <b-container fluid>
-                <b-row>
-                    <b-col cols="3" v-for="(item, index) in filterData" :key="index">
-                        <center>
-                            <div id="card">
-                                    <b-row no-gutters>
-                                    <b-col md="5">
-                                       <b-card-img :src="require('assets/user.png')" id="userIcon" class="rounded-0"></b-card-img>
-                                    </b-col>
-                                    <b-col md="7">
-                                        <b-card-body>
-                                            <label style="border: 2px solid">{{item.fname + " " + item.lname}}</label><br>
-                                            <label style="border: 2px solid">{{item.address}}</label><br>
-                                            <b-button v-on:click="redirect('/authorizationForm', index)" id="connectBtn">Connect</b-button>
-                                        </b-card-body>
-                                    </b-col>
-                                    </b-row>
-                            </div>
-                        </center>
-                    </b-col>
-                    <b-col cols="4">
-                        
-                    </b-col>
-                    <b-col cols="4">
-                        
-                    </b-col>
-                </b-row>
+              <b-row>
+                <b-col v-for="(item, index) in filterData" :key="index" cols="12" md="4">
+                  <div id="card">
+                    <b-card class="text-center">
+                      <b-row no-gutters>
+                        <b-col md="4">
+                          <b-card-img :src="require('assets/user.png')" id="userIcon" class="rounded-0" ></b-card-img>
+                        </b-col>
+                        <b-col md="8">
+                          <b-card-body>
+                            <label id="f_name" >{{item.fname + " " + item.lname}}</label>
+                            <br>
+                            <label id="address">{{item.address}}</label>
+                            <br>
+                            <b-button v-on:click="redirect('/authorizationForm', index)" id="connectBtn" >Connect</b-button>
+                          </b-card-body>
+                        </b-col>
+                      </b-row>
+                    </b-card>
+                  </div>
+                  <br>
+                </b-col>
+              </b-row>
             </b-container>
           </b-tab>
       <!-- Tab 2 -->
@@ -84,44 +81,45 @@
   margin-bottom: 1%;
   height: 100%;
 }
-#card{
+#card {
   border-color: $motif;
   box-shadow: 3px 5px 15px 3px #888888;
   border-radius: 7px;
 }
-.card{
+.card {
   text-align: center;
   border-color: $motif;
 }
-#searchBar{
+#searchBar {
   width: 30%;
   float: right;
   border-color: $motif;
 }
-#searchIcon{
+#searchIcon {
   float: right;
   margin-left: 5px;
 }
-#tracking{
+#tracking {
   width: 90%;
   float: right;
   border-color: $motif;
 }
-#connectBtn{
+#f_name,#address {
+  border: 2px solid;
+  border-radius: 5px;
+  border-color: $motif;
+  width: 100%;
+}
+#connectBtn,#addBtn,.motif {
   background-color: $motif;
 }
-#addBtn{
- background-color: $motif;
-}
-.motif{
-    border-color: $motif;
-}
-#userIcon{
-  height:160px;
+#userIcon {
+  height: 130px;
   margin-top: 18%;
   width: auto;
 }
 </style>
+
 
 <script>
 import ROUTER from "router"
@@ -186,11 +184,12 @@ export default {
     },
     managePusher(){
       let user = {
-        sendEmail: localStorage.getItem("receiverEmail")
+        receiveEmail: localStorage.getItem("receiverEmail")
       }
-      var channel = this.$pusher.subscribe('my-channel');
-      channel.bind('my-event', ({notify}) => {
-        if(parseInt(notify.recemail) == user.sendEmail){
+      var channel = this.$pusher.subscribe('form');
+      channel.bind('auth', (notify) => {
+        console.log("BUANG" + notify.recemail)
+        if(notify.recemail == user.receiveEmail){
           this.notify.unshift(notify)
         }
       });

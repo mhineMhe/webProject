@@ -8,7 +8,7 @@
         <b-navbar-nav class="ml-auto">
           <b-form-input
             class="input"
-            v-if="this.userEmail !== null"
+            v-if="this.userEmail === null"
             v-model="form.email"
             type="email"
             required
@@ -16,22 +16,22 @@
           ></b-form-input>&nbsp;&nbsp;&nbsp;
           <b-form-input
             class="input"
-            v-if="this.userEmail !== null"
+            v-if="this.userEmail === null"
             v-model="form.password"
             type="password"
             required
             placeholder="Password"
           ></b-form-input>&nbsp;&nbsp;&nbsp;
-          <b-button v-on:click="onSubmit" v-if="this.userEmail !== null" id="login">Login</b-button>
+          <b-button v-on:click="onSubmit" v-if="this.userEmail === null" id="login">Login</b-button>
 
-          <div variant="link" v-if="this.userEmail == null">
+          <div variant="link" v-if="this.userEmail !== null">
             <span
               style="margin-top:7px;color:#3483eb;"
               v-on:click="redirect()"
               class="fa fa-fw fa-home fa-2x"
             ></span>
           </div>
-          <div v-if="this.userEmail == null">
+          <div v-if="this.userEmail !== null">
             <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
               <template v-slot:button-content>
                 <span class="fas fa-user-circle fa-2x"></span>

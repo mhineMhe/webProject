@@ -37,11 +37,37 @@
             </b-container>
           </b-tab>
       <!-- Tab 2 -->
-          <b-tab title="Activities">
+          <!-- <b-tab title="Activities">
             <div v-for="(item,index) in notify" :key="index">
               <b-card>
                 <b-card-text>{{item.trackingNum}}</b-card-text>
               </b-card>
+            </div>
+          </b-tab> -->
+          <b-tab title="Activities">
+            <div v-for="(item,index) in notify" :key="index">
+              <vs-row vs-justify="center">
+                <vs-col type="flex" vs-w="10">
+                  <vs-card actionable class="cardx">
+                    <div slot="header">
+                      <h3>
+                        Authorization Form
+                      </h3>
+                    </div>
+                    <div>
+                      <b-card-text>You Send Authorization letter to _______________.</b-card-text>
+                      <b-card-text>Tracking Number is : {{item.trackingNum}}</b-card-text>
+                      <b-card-text>Date: mm/dd/yy hh:mm:ss</b-card-text>
+                    </div>
+                    <div slot="footer">
+                      <vs-row vs-justify="flex-end">
+                        <vs-button color="primary" type="gradient" @click="viewAuth(index)">View</vs-button>
+                        <vs-button color="danger" type="gradient" @click="deleteNotification(index)">Delete</vs-button>
+                      </vs-row>
+                    </div>
+                  </vs-card>
+                </vs-col>
+              </vs-row>
             </div>
           </b-tab>
           <!-- TAb 3 -->
@@ -165,19 +191,17 @@ export default {
     
   //   this.managePusher()
   // },
-   mounted(){
-     console.log("asdfjasdf ")
-    console.log(this.notify)
-     this.managePusher()
-     setTimeout( () => {
-       this.retrieve( response => {
-         if(response.data.partner.length > 0){
+  mounted(){
+    this.managePusher()
+    setTimeout( () => {
+      this.retrieve( response => {
+        if(response.data.partner.length > 0){
           this.data = response.data.partner
         }else{
           this.data = []
         }
-       })
-     }, 100)
+      })
+    }, 100)
   },
   data() {
     return {
@@ -288,6 +312,13 @@ export default {
     outputDate(){
       var d = new Date()
       this.date = (d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + "     --time-- " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+    },
+    viewAuth(index){
+      localStorage.setItem("track", this.notify[index].trackingNum)
+      ROUTER.push('/viewAuth')
+    },
+    deleteNotification(index){
+      this.notify.splice(index, 1)
     }
   }
 };

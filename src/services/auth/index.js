@@ -35,13 +35,14 @@ export default {
             .then(function (response) {
                 localStorage.setItem("email", email)
                 localStorage.setItem("show", true)
-                console.log(response.data.part.partneredId)
-                if(response.data.user == null && response.data.part.partneredId != null){
-                    localStorage.setItem("partner", "dashboardPartneredUser")
-                    ROUTER.push('/dashboardPartneredUser');
-                }else if(response.data.user != null){
+                // console.log(response.data.part.partneredId)
+                if(response.data.user !== undefined){
+                    console.log(response.data.user)
                     localStorage.setItem("user", "dashboard")
                     ROUTER.push('/dashboard');
+                }else{
+                    localStorage.setItem("partner", "dashboardPartneredUser")
+                    ROUTER.push('/dashboardPartneredUser');
                 }
                 console.log(response.data);
             })

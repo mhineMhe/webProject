@@ -36,11 +36,37 @@
             </b-container>
           </b-tab>
       <!-- Tab 2 -->
-          <b-tab title="Activities">
+          <!-- <b-tab title="Activities">
             <div v-for="(item,index) in notify" :key="index">
               <b-card>
                 <b-card-text>{{item.trackingNum}}</b-card-text>
               </b-card>
+            </div>
+          </b-tab> -->
+          <b-tab title="Activities">
+            <div v-for="(item,index) in notify" :key="index">
+              <vs-row vs-justify="center">
+                <vs-col type="flex" vs-w="10">
+                  <vs-card actionable class="cardx">
+                    <div slot="header">
+                      <h3>
+                        Authorization Form
+                      </h3>
+                    </div>
+                    <div>
+                      <b-card-text>You Send Authorization letter to _______________.</b-card-text>
+                      <b-card-text>Tracking Number is : {{item.trackingNum}}</b-card-text>
+                      <b-card-text>Date: mm/dd/yy hh:mm:ss</b-card-text>
+                    </div>
+                    <div slot="footer">
+                      <vs-row vs-justify="flex-end">
+                        <vs-button color="primary" type="gradient" >View</vs-button>
+                        <vs-button color="danger" type="gradient">Delete</vs-button>
+                      </vs-row>
+                    </div>
+                  </vs-card>
+                </vs-col>
+              </vs-row>
             </div>
           </b-tab>
           <!-- TAb 3 -->

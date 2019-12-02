@@ -2,28 +2,46 @@
   <div id="container">
     <div>
       <center>
-        <h1>Profile</h1><hr>
+        <h1>Profile</h1>
+        <hr />
       </center>
     </div>
     <div class="mt-4">
       <b-container fluid class>
         <b-row>
+          <b-col cols="2">
+          </b-col>
           <b-col cols="4">
             <b-img
               thumbnail
-              fluid
+              flui
               v-b-tooltip.hover.top
               title="Change your Avatar"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRAbWaFoCWis0v0glUMFab42PBZ3Y0_Z8UJAjxErDyJRz2vY7kN"
+              :src="imgUrl"
               alt="Image 3"
+              accept="image;"
               id="userIcon"
+              rounded="circle"
+              @click="$refs.file.click()"
             ></b-img>
-            <center>
-              <h1>Hi {{Uname}}</h1>
-            </center>
-            <!-- </v-hover> -->
+            <div>
+              <span>
+                <input
+                  type="file"
+                  id="file"
+                  @change="handleFileUpload()"
+                  ref="file"
+                  style="display:none"
+                />
+                <center>
+                  <br />
+                  <button :disabled="file.length" id="button" class="border border" @click="submit">Update Profile</button>
+                  <br><h1>Hi {{Uname}}</h1>
+                </center>
+              </span>
+            </div>
           </b-col>
-          <b-col cols="8">
+          <b-col cols="4">
             <div class="form-group">
               <label for="fullname">Full Name</label>
               <b-form-input
@@ -72,30 +90,38 @@
                 v-model="password"
               ></b-form-input>
             </div>
+            <br>
+              <center>
+              <button
+                type="button"
+                class="btn btn-outline-primary login-btn"
+                id="btnLogin"
+                @click="save"
+              >Save changes</button>
+            </center>
+          </b-col>
+          <b-col cols="2">
           </b-col>
         </b-row>
       </b-container>
     </div>
-
-    <center>
-      <button
-        type="button"
-        class="btn btn-outline-primary login-btn"
-        id="btnLogin"
-        @click="save"
-      >Save changes</button>
-    </center>
-    <br />
-    <br />
+    <br>
+    <br>
+    <hr>
   </div>
 </template>
 
 <script>
 import AUTH from "services/auth";
+import axios from "axios";
+import $ from "jquery";
 export default {
   data() {
     return {
+      imgUrl:
+        "https://lakewangaryschool.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile-sq.jpg",
       auth: AUTH,
+      file:'',
       fullname: "",
       username: "",
       email: "",
@@ -104,6 +130,14 @@ export default {
       password: "",
       Uname: sessionStorage.getItem("Username")
     };
+  },
+  mounted(){
+    if(localStorage.getItem("image") == null){
+      this.imgUrl =         "https://lakewangaryschool.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile-sq.jpg"
+    }else{
+      this.imgUrl = localStorage.getItem("image")
+    }
+    // this.imgUrl = localStorage.getItem("image")
   },
   methods: {
     save: function(e) {
@@ -121,7 +155,72 @@ export default {
         (this.address = ""),
         (this.phone = ""),
         (this.password = "");
+        (this.file);
+    },
+    addImage() {
+      $("#images")[0].click();
+    },
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+      this.imgUrl = URL.createObjectURL(this.file);
+    },
+    submit() {
+      /*
+                Initialize the form data
+            */
+      let formData = new FormData();
+      /*
+                Add the form data we need to submit
+            */
+      formData.append("img", this.file);
+      /*
+          Make the request to the POST /single-file URL
+        */
+      axios
+        .post("http://localhost:3000/uploadSingle", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        .then((res)=> {
+          axios.post("http://localhost:3000/profile/" + localStorage.getItem("email"), {profile: res.data.filename})
+            .then(response => {
+              console.log(response)
+            })
+            .catch(err => {
+              console.log(err)
+            })
+            console.log(res.data.filename)
+            localStorage.setItem("image", res.data.filename)
+            this.imgUrl = res.data.filename;
+          })  
+        .catch((err)=> {
+          console.log(err);
+        });
     }
+    /*
+        Handles a change on the file upload
+      */
+    // setUploadFile(event){
+    //     let files = event.target.files ||
+    //       event.dataTransfer.files
+    //     if(!files.length){
+    //       return false;
+    //     }else{
+    //       this.files = files[0]
+    //       this.createFiles(files[0])
+    //     }
+    // },
+    // Upload(){
+    //   let formData = new FormData()
+    //   formData.append('files' , this.files)
+    //   formData.append('files_url',this.file.name)
+    // },
+    // createFile(file){
+    //   let fileReader = new FileReader()
+    //   FileReader.readerDataURL(file)
+    //   this.upload()
+    // }
   }
 };
 </script>
@@ -133,30 +232,42 @@ export default {
 }
 .card {
   background-color: transparent;
-  border: 2px solid ;
+  border: 2px solid;
 }
 #userIcon {
-  width: 100%;
-  height: 60%;
-  margin-left: 1px;
+  width: 75%;
+  height: 70%;
+  margin-left: 60px;
   margin-top: 10px;
 }
-.mt-4{
-  border-color:#BB6BD9;;
+/* h1{
+  color:#bb6bd9;
+} */
+.mt-4 {
+  border-color: #bb6bd9;
 }
-.img-thumbnail{
-  border: 1px solid #BB6BD9;  
+.img-thumbnail {
+  border: 1px solid #bb6bd9;
 }
 .form-control {
-  border: 1px solid #BB6BD9;
+  border: 1px solid #bb6bd9;
 }
 .btn-outline-primary {
-  color:#BB6BD9;
-  border-color:#BB6BD9;
+  color: #bb6bd9;
+  border-color: #bb6bd9;
 }
-hr{
-  border-top: 1px solid #BB6BD9;
-  margin-top:1rem;
-  margin-bottom:1rem;
+hr {
+  border-top: 1px solid #bb6bd9;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 21rem;
+  margin-right: 17.5rem;
+}
+#button{
+   background-color: transparent;
+}
+.border {
+  border-color: #bb6bd9;
+  border-radius: 0.25rem;
 }
 </style>

@@ -25,7 +25,7 @@
                             <br>
                             <label id="address">{{item.address}}</label>
                             <br>
-                            <b-button v-on:click="redirect('/authorizationForm', index)" id="connectBtn" >Connect</b-button>
+                            <b-button v-on:click="redirect('/personalinformation', index)" id="connectBtn" >Connect</b-button>
                           </b-card-body>
                         </b-col>
                       </b-row>

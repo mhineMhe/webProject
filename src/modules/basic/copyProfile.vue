@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top: 5%;" id="container">
+  <div id="container">
     <div>
       <center>
         <h1>Profile</h1>
@@ -15,16 +15,27 @@
             <b-img
               thumbnail
               flui
+              v-b-tooltip.hover.top
+              title="Change your Avatar"
               :src="imgUrl"
               alt="Image 3"
               accept="image;"
               id="userIcon"
               rounded="circle"
+              @click="$refs.file.click()"
             ></b-img>
             <div>
               <span>
+                <input
+                  type="file"
+                  id="file"
+                  @change="handleFileUpload()"
+                  ref="file"
+                  style="display:none"
+                />
                 <center>
                   <br />
+                  <button :disabled="file.length" id="button" class="border border" @click="submit">Update Profile</button>
                   <br><h1>Hi {{Uname}}</h1>
                 </center>
               </span>
@@ -32,35 +43,70 @@
           </b-col>
           <b-col cols="4">
             <div class="form-group">
-              <h5 for="fullname">Full Name:</h5>
-              <h2 class="margLeft">{{fullname}}</h2>
+              <label for="fullname">Full Name</label>
+              <b-form-input
+                required
+                type="text"
+                class="form-control"
+                id="fullname"
+                v-model="fullname"
+              ></b-form-input>
             </div>
             <div class="form-group">
-              <h5 for="address" class="bmd-label-floating">Address:</h5>
-              <h2 class="margLeft">{{address}}</h2>
+              <label for="username" class="bmd-label-floating">Username</label>
+              <b-form-input
+                required
+                type="text"
+                class="form-control"
+                id="Username"
+                v-model="username"
+              ></b-form-input>
             </div>
             <div class="form-group">
-              <h5 for="phone" class="bmd-label-floating">PhoneNo.:</h5>
-              <h2 class="margLeft">{{phone}}</h2>
+              <label for="email" class="bmd-label-floating">Email</label>
+              <b-form-input required type="email" class="form-control" id="Email" v-model="email"></b-form-input>
             </div>
             <div class="form-group">
-              <h5 for="username" class="bmd-label-floating">Username:</h5>
-              <h2 class="margLeft">{{username}}</h2>
+              <label for="address" class="bmd-label-floating">Address</label>
+              <b-form-input
+                required
+                type="text"
+                class="form-control"
+                id="Address"
+                v-model="address"
+              ></b-form-input>
             </div>
             <div class="form-group">
-              <h5 for="email" class="bmd-label-floating">Email:</h5>
-              <h2 class="margLeft">{{email}}</h2>
+              <label for="phone" class="bmd-label-floating">PhoneNo.</label>
+              <b-form-input required type="text" class="form-control" id="phone" v-model="phone"></b-form-input>
             </div>
             <div class="form-group">
-              <h5 for="pwd" class="bmd-label-floating">Password:</h5>
-              <h2 class="margLeft">{{password}}</h2>
+              <label for="pwd" class="bmd-label-floating">Password</label>
+              <b-form-input
+                required
+                type="password"
+                class="form-control"
+                id="passw"
+                v-model="password"
+              ></b-form-input>
             </div>
+            <br>
+              <center>
+              <button
+                type="button"
+                class="btn btn-outline-primary login-btn"
+                id="btnLogin"
+                @click="save"
+              >Save changes</button>
+            </center>
           </b-col>
           <b-col cols="2">
           </b-col>
         </b-row>
       </b-container>
     </div>
+    <br>
+    <br>
     <hr>
   </div>
 </template>
@@ -96,7 +142,7 @@ export default {
   },
   methods: {
     retrieveData(){
-      axios.post("http://localhost:3000/onePartner/" + localStorage.getItem("profEmail"))
+      axios.post("http://localhost:3000/onePartner/" + localStorage.getItem("email"))
         .then(res => {
           this.username = res.data.partner[0].username
           this.email = res.data.partner[0].email
@@ -244,8 +290,5 @@ hr {
 .border {
   border-color: #bb6bd9;
   border-radius: 0.25rem;
-}
-.margLeft{
-  margin-left: 10%;
 }
 </style>

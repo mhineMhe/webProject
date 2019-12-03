@@ -27,6 +27,14 @@ export default {
             }
         },
         {
+            path: '/copyProfile',
+            name: 'copyProfile',
+            component: resolve => require(['modules/basic/copyProfile.vue'], resolve),
+            meta: {
+                tokenRequired: true
+            }
+        },
+        {
             path: '/authorizationForm',
             name: 'authorizationForm',
             component: resolve => require(['modules/basic/authPage.vue'], resolve),

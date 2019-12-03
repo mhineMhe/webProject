@@ -16,7 +16,7 @@
                     <b-card class="text-center">
                       <b-row no-gutters>
                         <b-col md="4">
-                          <b-card-img :src="require('assets/user.png')" id="userIcon" class="rounded-0" ></b-card-img>
+                          <b-card-img :src="require('assets/user.png')" id="userIcon" class="rounded-0" style="cursor: pointer" @click="profile('/personalinformation',index)"></b-card-img>
                         </b-col>
                         <b-col md="8">
                           <b-card-body>
@@ -202,6 +202,7 @@ export default {
             this.trackingData = response.data.track
           }else{
             this.trackingData = []
+            alert("invalid tracking number")
           }
         })
         .catch(err => {
@@ -258,6 +259,10 @@ export default {
           this.location = "",
           this.date = ""
         })
+    },
+    profile(route, index){
+      localStorage.setItem("profEmail", this.filterData[index].email)
+      ROUTER.push(route);
     }
     
     // searchAddress(callback){

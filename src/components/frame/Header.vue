@@ -63,10 +63,10 @@ export default {
   },
   methods: {
     goToPersonalInfo(){
-      ROUTER.push('/personalInformation')
+      ROUTER.push('/copyProfile')
     },
     redirect() {
-      if(localStorage.getItem("partner") === null){
+      if(localStorage.getItem("partner") === undefined){
         ROUTER.push('/dashboardPartneredUser')
       }else{
         ROUTER.push('/dashboard')
@@ -80,6 +80,7 @@ export default {
 
     onSubmit(e) {
       e.preventDefault();
+      // alert(localStorage.getItem("email"))
       AUTH.login(this.form.email, this.form.password)
         // .then(response => {
         //   this.userEmail = response.data.email;
@@ -87,8 +88,6 @@ export default {
         // .catch(err => {
         //   console.log(err);
         // });
-      this.userEmail = localStorage.getItem("email");
-      alert("Hi " + this.userEmail);
     }
   }
 };

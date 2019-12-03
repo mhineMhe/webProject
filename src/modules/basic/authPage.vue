@@ -400,6 +400,7 @@ export default {
         .post("http://localhost:3000/authLetter", allData)
         .then(response => {
           console.log(response)
+          localStorage.setItem("tracking", this.TrackingNumber)
           if(localStorage.getItem("partner")){
               ROUTER.push('/dashboardPartneredUser');
           }else{

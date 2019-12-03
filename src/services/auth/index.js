@@ -27,6 +27,7 @@ export default {
     },
 
     login(email, password) {
+        // userEmail = localStorage.getItem("email");
         var data = {
             email: email,
             password: password
@@ -34,22 +35,20 @@ export default {
         axios.post('http://localhost:3000/login', data)
             .then(function (response) {
                 localStorage.setItem("email", email)
-                localStorage.setItem("show", true)
-                // console.log(response.data.part.partneredId)
-                if(response.data.user !== undefined){
+                if (response.data.user !== undefined) {
                     console.log(response.data.user)
                     localStorage.setItem("user", "dashboard")
                     ROUTER.push('/dashboard');
-                }else{
+                } else {
                     localStorage.setItem("partner", "dashboardPartneredUser")
                     ROUTER.push('/dashboardPartneredUser');
                 }
                 console.log(response.data);
             })
             .catch(function (error) {
+                localStorage.removeItem("email")
                 console.log(error);
             });
-        return null
     },
     logout() {
         ROUTER.push('/Homepage')

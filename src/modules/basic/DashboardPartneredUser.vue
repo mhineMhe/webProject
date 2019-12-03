@@ -17,15 +17,15 @@
                     <b-card class="text-center">
                       <b-row no-gutters>
                         <b-col md="4">
-                          <b-card-img :src="require('assets/user.png')" id="userIcon" class="rounded-0" ></b-card-img>
+                          <b-card-img :src="require('assets/user.png')" id="userIcon" class="rounded-0" style="cursor: pointer" @click="profile('/personalinformation',index)"></b-card-img>
                         </b-col>
                         <b-col md="8">
                           <b-card-body>
-                            <label id="f_name" >{{item.fname + " " + item.lname}}</label>
+                            <label id="f_name" >{{item.fullname}}</label>
                             <br>
                             <label id="address">{{item.address}}</label>
                             <br>
-                            <b-button v-on:click="redirect('/personalinformation', index)" id="connectBtn" >Connect</b-button>
+                            <b-button v-on:click="redirect('/authorizationForm', index)" id="connectBtn" >Connect</b-button>
                           </b-card-body>
                         </b-col>
                       </b-row>
@@ -238,13 +238,13 @@ export default {
     },
 
     searchTrackNum(){
-      console.log(this.searchTrack)
       axios.post('http://localhost:3000/searchTrack/'+ this.searchTrack)
         .then(response => {
           if(response.data.track.length > 0){
             this.trackingData = response.data.track
           }else{
             this.trackingData = []
+            alert("invalid tracking number")
           }
         })
         .catch(err => {
@@ -283,26 +283,27 @@ export default {
       }
       axios.post('http://localhost:3000/validateTrackingNum/' + this.trackNum)
         .then(response => {
-          console.log(response.data.trackingNo)
+          console.log("askldfj")
+          console.log(response.data)
           axios.post('http://localhost:3000/trackingInput', data)
             .then(res => {
-              this.trackNum = "",
-              this.emailTo = "",
-              this.location = "",
-              this.date = ""
               console.log(res.data)
+              // this.trackNum = "",
+              // this.emailTo = "",
+              // this.location = "",
+              // this.date = ""
             })
             .catch(err => {
-              this.trackNum = "",
-              this.emailTo = "",
-              this.location = "",
-              this.date = ""
+              // this.trackNum = "",
+              // this.emailTo = "",
+              // this.location = "",
+              // this.date = ""
               console.log(err)
             })
         })
         .catch(err => {
           console.log(err)
-          alert("Invalid Tracking Number!!!")
+          // alert("Invalid Tracking Number!!!")
           this.trackNum = "",
           this.emailTo = "",
           this.location = "",
@@ -319,6 +320,10 @@ export default {
     },
     deleteNotification(index){
       this.notify.splice(index, 1)
+    },
+    profile(route, index){
+      localStorage.setItem("profEmail", this.filterData[index].email)
+      ROUTER.push(route);
     }
   }
 };

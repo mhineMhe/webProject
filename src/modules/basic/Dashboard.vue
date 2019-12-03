@@ -195,31 +195,51 @@ export default {
       });
     },
     searchTrackNum(){
-      console.log(this.searchTrack)
-      axios.post('http://localhost:3000/searchTrack/'+ this.searchTrack)
-        .then(response => {
-          if(response.data.track.length > 0){
-            this.trackingData = response.data.track
-          }else{
-            this.trackingData = []
-            alert("invalid tracking number")
-          }
+      axios.post('http://localhost:3000/validateTrackingNum/' + this.searchTrack)
+        .then(res => {
+          console.log(res)
+          axios.post('http://localhost:3000/searchTrack/'+ this.searchTrack)
+          .then(response => {
+            console.log(response)
+            if(res.data.track.length == 0){
+              alert("invalid tracking number")
+            }else if(response.data.track.length > 0){
+              this.trackingData = response.data.track
+            }else{
+              this.trackingData = []
+              alert("no update yet!!!")
+            }
+          })
+          .catch(err => {
+            console.log(err)  
+            alert("aksdjf;lkjag")
+          })
         })
         .catch(err => {
           console.log(err)
+          alert("invalid tracking number")
         })
     },
     managePusher(){
-      let user = {
-        receiveEmail: localStorage.getItem("receiverEmail")
-      }
-      var channel = this.$pusher.subscribe('form');
-      channel.bind('auth', (notify) => {
-        console.log("BUANG" + notify.recemail)
-        if(notify.recemail == user.receiveEmail){
-          this.notify.unshift(notify)
-        }
-      });
+      var channel = this.$pusher.subscribe("my-channel");
+      channel.bind("my-event", (notify) => {
+        console.log("Channel --------------------" , notify)
+          var data = {
+            tracknum: notify.notify.trackingNum,
+            email: notify.notify.recemail,
+            senderEmail: notify.notify.sendemail
+          }
+          console.log(data)
+          axios.post('http://localhost:3000/notification',data)
+            .then(res => {
+              console.log(res)
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          console.log("I am MJ. I'm in")
+          // this.notify.unshift(notify.notify)
+      })
     },
     redirect(route, index){
       localStorage.setItem("receiverEmail", this.filterData[index].email)
@@ -237,10 +257,10 @@ export default {
           console.log(response.data.trackingNo)
           axios.post('http://localhost:3000/trackingInput', data)
             .then(res => {
-              this.trackNum = "",
-              this.emailTo = "",
-              this.location = "",
-              this.date = ""
+              // this.trackNum = "",
+              // this.emailTo = "",
+              // this.location = "",
+              // this.date = ""
               console.log(res.data)
             })
             .catch(err => {
@@ -254,10 +274,10 @@ export default {
         .catch(err => {
           console.log(err)
           alert("Invalid Tracking Number!!!")
-          this.trackNum = "",
-          this.emailTo = "",
-          this.location = "",
-          this.date = ""
+          // this.trackNum = "",
+          // this.emailTo = "",
+          // this.location = "",
+          // this.date = ""
         })
     },
     profile(route, index){

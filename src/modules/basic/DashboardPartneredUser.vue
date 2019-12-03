@@ -45,18 +45,18 @@
             </div>
           </b-tab> -->
           <b-tab title="Activities">
-            <div v-for="(item,index) in notify" :key="index">
+            <div>
               <vs-row vs-justify="center">
                 <vs-col type="flex" vs-w="10">
-                  <vs-card actionable class="cardx">
-                    <div slot="header">
+                  <div slot="header">
                       <h3>
                         Authorization Form
                       </h3>
-                    </div>
-                    <div>
-                      <b-card-text>You Send Authorization letter to _______________.</b-card-text>
-                      <b-card-text>Tracking Number is : {{item.trackingNum}}</b-card-text>
+                    </div><br>
+                  <vs-card actionable class="cardx" v-for="(item,index) in notify" :key="index">
+                    <div style="border:solid black"><br>
+                      <b-card-text>You Send Authorization letter to {{item.senderEmail}}.</b-card-text>
+                      <b-card-text>Tracking Number is : {{item.tracknum}}</b-card-text>
                       <b-card-text>Date: mm/dd/yy hh:mm:ss</b-card-text>
                     </div>
                     <div slot="footer">
@@ -187,12 +187,11 @@
 import ROUTER from "router"
 const axios = require('axios');
 export default {
-  // created(){
-    
-  //   this.managePusher()
-  // },
-  mounted(){
+  created(){
     this.managePusher()
+  },
+  mounted(){
+    this.getAllNotification()
     setTimeout( () => {
       this.retrieve( response => {
         if(response.data.partner.length > 0){
@@ -238,35 +237,69 @@ export default {
     },
 
     searchTrackNum(){
-      axios.post('http://localhost:3000/searchTrack/'+ this.searchTrack)
-        .then(response => {
-          if(response.data.track.length > 0){
-            this.trackingData = response.data.track
+      axios.post('http://localhost:3000/validateTrackingNum/' + this.searchTrack)
+        .then(res => {
+          console.log(res)
+          axios.post('http://localhost:3000/searchTrack/'+ this.searchTrack)
+          .then(response => {
+            console.log(response)
+            if(res.data.track.length == 0){
+              alert("invalid tracking number")
+            }else if(response.data.track.length > 0){
+              this.trackingData = response.data.track
+            }else{
+              this.trackingData = []
+              alert("no update yet!!!")
+            }
+          })
+          .catch(err => {
+            console.log(err)  
+            alert("aksdjf;lkjag")
+          })
+        })
+        .catch(err => {
+          console.log(err)
+          alert("invalid tracking number")
+        })
+    },
+
+    managePusher(){
+      var channel = this.$pusher.subscribe("my-channel");
+      channel.bind("my-event", (notify) => {
+        console.log("Channel --------------------" , notify)
+          var data = {
+            tracknum: notify.notify.trackingNum,
+            email: notify.notify.recemail,
+            senderEmail: notify.notify.sendemail
+          }
+          console.log(data)
+          axios.post('http://localhost:3000/notification',data)
+            .then(res => {
+              console.log(res)
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          console.log("I am MJ. I'm in")
+          // this.notify.unshift(notify.notify)
+      })
+    },
+
+    getAllNotification(){
+      axios.get('http://localhost:3000/notify/' + localStorage.getItem("email"))
+        .then(res => {
+          if(res.data.pusher.length > 0){
+            console.log("lkasjdflkjaslkfjalsd")
+            this.notify = res.data.pusher
+            console.log(res.data)
+            console.log("ajsdfkjalskfdj")
           }else{
-            this.trackingData = []
-            alert("invalid tracking number")
+            this.notify = []
           }
         })
         .catch(err => {
           console.log(err)
         })
-    },
-
-    managePusher(){
-      var channel = this.$pusher.subscribe('form');
-      channel.bind('auth', function(data) {
-       console.log(data)
-      });
-      // let user = {
-      //   receiveEmail: localStorage.getItem("receiverEmail")
-      // }
-      // var channel = this.$pusher.subscribe('form');
-      // channel.bind('auth', (notify) => {
-      //   console.log("BUANG" + notify.recemail)
-      //   if(notify.recemail == user.receiveEmail){
-      //     this.notify.unshift(notify)
-      //   }
-      // });
     },
 
     redirect(route, index){
@@ -315,10 +348,19 @@ export default {
       this.date = (d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + "     --time-- " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
     },
     viewAuth(index){
-      localStorage.setItem("track", this.notify[index].trackingNum)
+      console.log(this.notify[index].tracknum)
+      localStorage.setItem("track", this.notify[index].tracknum)
       ROUTER.push('/viewAuth')
     },
     deleteNotification(index){
+      console.log(this.notify[index].tracknum)
+      axios.delete('http://localhost:3000/deletNotification/' + this.notify[index].tracknum)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
       this.notify.splice(index, 1)
     },
     profile(route, index){

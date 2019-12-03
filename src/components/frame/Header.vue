@@ -66,7 +66,7 @@ export default {
       ROUTER.push('/copyProfile')
     },
     redirect() {
-      if(localStorage.getItem("partner") === undefined){
+      if(localStorage.getItem("partner")){
         ROUTER.push('/dashboardPartneredUser')
       }else{
         ROUTER.push('/dashboard')

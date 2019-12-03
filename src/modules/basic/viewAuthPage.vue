@@ -110,7 +110,7 @@ export default {
       UpdateSenderName: "",
       UpdateyourAddress: "",
       Updatezip: "",
-      UpdatecurrentDate: new Date(),
+      UpdatecurrentDate: "",
       UpdatedueDates: "",
       UpdaterecName: "",
       UpdaterecNames: "",
@@ -120,19 +120,28 @@ export default {
     };
   },
   mounted() {
-    this.UpdateSenderName = localStorage.getItem("senderName");
-    this.UpdateSenderNames = localStorage.getItem("senderNameUnder");
-    this.UpdateyourAddress = localStorage.getItem("senderAddress");
-    this.Updatezip = localStorage.getItem("senderZip");
-    this.UpdatedueDates = localStorage.getItem("dueDate");
-    this.UpdaterecName = localStorage.getItem("receiverName");
-    this.UpdaterecNames = localStorage.getItem("receiverNameUnder");
-    this.UpdaterecAddress = localStorage.getItem("receiverAddress");
-    this.UpdaterecZip = localStorage.getItem("receiverZip");
-    this.Updatedoc = localStorage.getItem("documents");
-    this.UpdateauthDocument = localStorage.getItem("documentsUpper");
-    this.UpdateTypeofId = localStorage.getItem("typeId");
-    this.UpdateIdNumber = localStorage.getItem("idNumber");
+    console.log(localStorage.getItem("track"))
+    axios.post('http://localhost:3000/validateTrackingNum/' + localStorage.getItem("track"))
+      .then(res => {
+        console.log(res)
+        this.UpdateSenderNames = res.data.track[0].senderName
+        this.UpdateSenderName = res.data.track[0].senderName
+        this.UpdateyourAddress = res.data.track[0].senderAddress
+        this.Updatezip = res.data.track[0].senderZipCode
+        this.UpdatecurrentDate = res.data.track[0].currentDate
+        this.UpdaterecAddress = res.data.track[0].receiverAddress
+        this.UpdaterecName = res.data.track[0].receiverName
+        this.UpdaterecNames = res.data.track[0].receiverName
+        this.UpdaterecZip = res.data.track[0].receiverZipCode
+        this.UpdatedueDates = res.data.track[0].dueDate
+        this.UpdateauthDocument = res.data.track[0].documentType
+        this.Updatedoc = res.data.track[0].documentType
+        this.UpdateTypeofId = res.data.track[0].identityType
+        this.UpdateIdNumber = res.data.track[0].idNumber
+      })
+      .catch(err => {
+        console.log(err)
+      })
   },
   methods: {
     goBack() {

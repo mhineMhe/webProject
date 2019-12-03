@@ -12,7 +12,7 @@ import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
 Vue.use(VueSidebarMenu)
 Vue.use(require('vue-pusher'), {
-  api_key: 'ea9fe3985cb69d3aff5d',
+  api_key: '19f814902a00899fa4c5',
   options: {
       cluster: 'ap1',
       encrypted: true,

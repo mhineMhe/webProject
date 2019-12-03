@@ -96,7 +96,7 @@
                 type="button"
                 class="btn btn-outline-primary login-btn"
                 id="btnLogin"
-                @click="save"
+                @click="submit"
               >Save changes</button>
             </center>
           </b-col>
@@ -133,16 +133,16 @@ export default {
   },
   mounted(){
     this.retrieveData()
-    if(localStorage.getItem("image") == null){
-      this.imgUrl =         "https://lakewangaryschool.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile-sq.jpg"
-    }else{
-      this.imgUrl = localStorage.getItem("image")
-    }
+      // if(localStorage.getItem("image") == null){
+      //   this.imgUrl =         "https://lakewangaryschool.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile-sq.jpg"
+      // }else{
+      //   this.imgUrl = localStorage.getItem("image")
+      // }
     // this.imgUrl = localStorage.getItem("image")
   },
   methods: {
     retrieveData(){
-      axios.post("http://localhost:3000/onePartner/" + localStorage.getItem("email"))
+      axios.post("http://localhost:3000/onePartner/" + localStorage.getItem("profEmail"))
         .then(res => {
           this.username = res.data.partner[0].username
           this.email = res.data.partner[0].email
@@ -151,6 +151,7 @@ export default {
           this.phone = res.data.partner[0].phoneNum
           this.fullname = res.data.partner[0].fullname
           this.Uname = res.data.partner[0].username
+          this.imgUrl = res.data.partner[0].profilePic
         })
         .catch(err => {
           console.log(err)
@@ -181,6 +182,8 @@ export default {
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
       this.imgUrl = URL.createObjectURL(this.file);
+      console.log(this.file);
+      
     },
     submit() {
       /*
@@ -190,7 +193,17 @@ export default {
       /*
                 Add the form data we need to submit
             */
+           var data= {
+        fullname: this.fullname,
+        username: this.username,
+        email: this.email,
+        password: this.password,
+        address: this.address,
+        phoneNum: this.phone,
+      }
       formData.append("img", this.file);
+      formData.append("details", JSON.stringify(data));
+      formData.append("user", localStorage.getItem("profEmail"));
       /*
           Make the request to the POST /single-file URL
         */
@@ -201,16 +214,20 @@ export default {
           }
         })
         .then((res)=> {
-          axios.post("http://localhost:3000/profile/" + localStorage.getItem("email"), {profile: res.data.filename})
-            .then(response => {
-              console.log(response)
-            })
-            .catch(err => {
-              console.log(err)
-            })
-            console.log(res.data.filename)
-            localStorage.setItem("image", res.data.filename)
-            this.imgUrl = res.data.filename;
+          console.log(res)
+
+
+          // axios.post("http://localhost:3000/profile/" + localStorage.getItem("email"), {profile: res.data.filename})
+          //   .then(response => {
+          //     console.log(response)
+          //   })
+          //   .catch(err => {
+          //     console.log(err)
+          //   })
+          //   console.log(res.data.filename)
+          //   localStorage.setItem("image", res.data.filename)
+          //   this.imgUrl = res.data.filename
+          this.imgUrl = res.data.profilePic
           })  
         .catch((err)=> {
           console.log(err);

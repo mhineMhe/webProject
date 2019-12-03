@@ -17,7 +17,7 @@
                     <b-card class="text-center">
                       <b-row no-gutters>
                         <b-col md="4">
-                          <b-card-img :src="require('assets/user.png')" id="userIcon" class="rounded-0" style="cursor: pointer" @click="profile('/personalinformation',index)"></b-card-img>
+                          <b-card-img :src="item.profilePic?item.profilePic: placeholder" id="userIcon" rounded="circle" style="cursor: pointer" @click="profile('/personalinformation',index)"></b-card-img>
                         </b-col>
                         <b-col md="8">
                           <b-card-body>
@@ -201,6 +201,7 @@ export default {
   },
   data() {
     return {
+      placeholder: require('assets/user.png'),
       data: [],
       search: "",
       notify: [],
@@ -215,7 +216,6 @@ export default {
   component: {
   },
   computed: {
-
     filterData () {
         return this.data.filter( data => {
             return !this.search || data.address.toLowerCase().includes(this.search.toLowerCase())

@@ -15,7 +15,7 @@
             <b-img
               thumbnail
               flui
-              :src="imgUrl"
+              :src="imgUrl?imgUrl:placeHolder"
               alt="Image 3"
               accept="image;"
               id="userIcon"
@@ -68,12 +68,11 @@
 <script>
 import AUTH from "services/auth";
 import axios from "axios";
-import $ from "jquery";
 export default {
   data() {
     return {
-      imgUrl:
-        "https://lakewangaryschool.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile-sq.jpg",
+      placeHolder: "https://lakewangaryschool.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile-sq.jpg",
+      imgUrl:null,
       auth: AUTH,
       file:'',
       fullname: "",
@@ -87,11 +86,11 @@ export default {
   },
   mounted(){
     this.retrieveData()
-    if(localStorage.getItem("image") == null){
-      this.imgUrl =         "https://lakewangaryschool.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile-sq.jpg"
-    }else{
-      this.imgUrl = localStorage.getItem("image")
-    }
+    // if(localStorage.getItem("image") == null){
+    //   this.imgUrl =         "https://lakewangaryschool.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile-sq.jpg"
+    // }else{
+    //   this.imgUrl = localStorage.getItem("image")
+    // }
     // this.imgUrl = localStorage.getItem("image")
   },
   methods: {
@@ -105,97 +104,12 @@ export default {
           this.phone = res.data.partner[0].phoneNum
           this.fullname = res.data.partner[0].fullname
           this.Uname = res.data.partner[0].username
+          this.imgUrl = res.data.partner[0].profilePic
         })
         .catch(err => {
           console.log(err)
         })
-    },
-    save: function(e) {
-      e.preventDefault();
-      var data= {
-        fullname: this.fullname,
-        username: this.username,
-        email: this.email,
-        password: this.password,
-        address: this.address,
-        phoneNum: this.phone,
-      }
-      axios.post("http://localhost:3000/onePartner/" + localStorage.getItem("email"), data)
-        .then(res => {
-          console.log("asjdflk")
-          console.log(res)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    },
-    addImage() {
-      $("#images")[0].click();
-    },
-    handleFileUpload() {
-      this.file = this.$refs.file.files[0];
-      this.imgUrl = URL.createObjectURL(this.file);
-    },
-    submit() {
-      /*
-                Initialize the form data
-            */
-      let formData = new FormData();
-      /*
-                Add the form data we need to submit
-            */
-      formData.append("img", this.file);
-      /*
-          Make the request to the POST /single-file URL
-        */
-      axios
-        .post("http://localhost:3000/uploadSingle", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data"
-          }
-        })
-        .then((res)=> {
-          axios.post("http://localhost:3000/profile/" + localStorage.getItem("email"), {profile: res.data.filename})
-            .then(response => {
-              console.log(response)
-            })
-            .catch(err => {
-              console.log(err)
-            })
-            console.log(res.data.filename)
-            localStorage.setItem("image", res.data.filename)
-            this.imgUrl = res.data.filename;
-          })  
-        .catch((err)=> {
-          console.log(err);
-        });
-    },
-    getProfile(){
-
     }
-    /*
-        Handles a change on the file upload
-      */
-    // setUploadFile(event){
-    //     let files = event.target.files ||
-    //       event.dataTransfer.files
-    //     if(!files.length){
-    //       return false;
-    //     }else{
-    //       this.files = files[0]
-    //       this.createFiles(files[0])
-    //     }
-    // },
-    // Upload(){
-    //   let formData = new FormData()
-    //   formData.append('files' , this.files)
-    //   formData.append('files_url',this.file.name)
-    // },
-    // createFile(file){
-    //   let fileReader = new FileReader()
-    //   FileReader.readerDataURL(file)
-    //   this.upload()
-    // }
   }
 };
 </script>

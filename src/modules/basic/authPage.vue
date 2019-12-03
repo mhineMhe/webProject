@@ -341,12 +341,12 @@ export default {
   component: {},
   methods: {
     generateTrackNumber: function() {
-      const a = "ABCD".split("")[Math.floor(Math.random() * 4)];
-      const b = "EFGH".split("")[Math.floor(Math.random() * 4)];
-      const c = "IJKL".split("")[Math.floor(Math.random() * 4)];
-      const d = "MNOP".split("")[Math.floor(Math.random() * 4)];
-      const e = "QRST".split("")[Math.floor(Math.random() * 4)];
-      const f = "UVWXYZ".split("")[Math.floor(Math.random() * 6)];
+      const a = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+      const b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+      const c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+      const d = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+      const e = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+      const f = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
       var tracknum1 = Math.floor(10 + Math.random() * 90).toString();
       var tracknum2 = Math.floor(10 + Math.random() * 90).toString();
       var tracknum3 = Math.floor(10 + Math.random() * 90).toString();
@@ -363,6 +363,19 @@ export default {
         "-" +
         (e + f);
       console.log("trackingnumber:" + this.TrackingNumber);
+      var recEmail = localStorage.getItem("receiverEmail")
+      var notify = {
+        trackingNum: this.TrackingNumber,
+        sendemail: localStorage.getItem("email"),
+        recemail: recEmail
+      }
+      axios.post("http://localhost:3000/pusher", notify)
+        .then(response => {
+          console.log(response)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
@@ -411,19 +424,6 @@ export default {
         .catch(function (error) {
             console.log(error);
         });
-      var recEmail = localStorage.getItem("receiverEmail")
-      var notify = {
-        trackingNum: this.TrackingNumber,
-        sendemail: localStorage.getItem("email"),
-        recemail: recEmail
-      }
-      axios.post("http://localhost:3000/pusher", notify)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(err => {
-          console.log(err)
-        })
 
         localStorage.removeItem("senderName");
         localStorage.removeItem("senderNameUnder");

@@ -44,24 +44,24 @@
             </div>
           </b-tab> -->
           <b-tab title="Activities">
-            <div v-for="(item,index) in notify" :key="index">
+            <div>
               <vs-row vs-justify="center">
                 <vs-col type="flex" vs-w="10">
-                  <vs-card actionable class="cardx">
-                    <div slot="header">
+                  <div slot="header">
                       <h3>
                         Authorization Form
                       </h3>
-                    </div>
-                    <div>
-                      <b-card-text>You Send Authorization letter to _______________.</b-card-text>
-                      <b-card-text>Tracking Number is : {{item.trackingNum}}</b-card-text>
+                    </div><br>
+                  <vs-card actionable class="cardx" v-for="(item,index) in notify" :key="index">
+                    <div style="border:solid black"><br>
+                      <b-card-text>You Send Authorization letter to {{item.senderEmail}}.</b-card-text>
+                      <b-card-text>Tracking Number is : {{item.tracknum}}</b-card-text>
                       <b-card-text>Date: mm/dd/yy hh:mm:ss</b-card-text>
                     </div>
                     <div slot="footer">
                       <vs-row vs-justify="flex-end">
-                        <vs-button color="primary" type="gradient" >View</vs-button>
-                        <vs-button color="danger" type="gradient">Delete</vs-button>
+                        <vs-button color="primary" type="gradient" @click="viewAuth(index)">View</vs-button>
+                        <vs-button color="danger" type="gradient" @click="deleteNotification(index)">Delete</vs-button>
                       </vs-row>
                     </div>
                   </vs-card>
@@ -212,12 +212,10 @@ export default {
           })
           .catch(err => {
             console.log(err)  
-            alert("aksdjf;lkjag")
           })
         })
         .catch(err => {
           console.log(err)
-          alert("invalid tracking number")
         })
     },
     managePusher(){
@@ -240,6 +238,20 @@ export default {
           console.log("I am MJ. I'm in")
           // this.notify.unshift(notify.notify)
       })
+    },
+
+    getAllNotification(){
+      axios.get('http://localhost:3000/notify/' + localStorage.getItem("email"))
+        .then(res => {
+          if(res.data.pusher.length > 0){
+            this.notify = res.data.pusher
+          }else{
+            this.notify = []
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     redirect(route, index){
       localStorage.setItem("receiverEmail", this.filterData[index].email)
@@ -264,10 +276,10 @@ export default {
               console.log(res.data)
             })
             .catch(err => {
-              this.trackNum = "",
-              this.emailTo = "",
-              this.location = "",
-              this.date = ""
+              // this.trackNum = "",
+              // this.emailTo = "",
+              // this.location = "",
+              // this.date = ""
               console.log(err)
             })
         })
@@ -279,6 +291,22 @@ export default {
           // this.location = "",
           // this.date = ""
         })
+    },
+    viewAuth(index){
+      console.log(this.notify[index].tracknum)
+      localStorage.setItem("track", this.notify[index].tracknum)
+      ROUTER.push('/viewAuth')
+    },
+    deleteNotification(index){
+      console.log(this.notify[index].tracknum)
+      axios.delete('http://localhost:3000/deletNotification/' + this.notify[index].tracknum)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+      this.notify.splice(index, 1)
     },
     profile(route, index){
       localStorage.setItem("profEmail", this.filterData[index].email)

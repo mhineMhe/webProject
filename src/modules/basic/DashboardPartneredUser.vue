@@ -44,7 +44,7 @@
               </b-card>
             </div>
           </b-tab> -->
-          <b-tab title="Activities">
+          <b-tab title="Activities" @click="getAllNotification()">
             <div>
               <vs-row vs-justify="center">
                 <vs-col type="flex" vs-w="10">
@@ -187,11 +187,8 @@
 import ROUTER from "router"
 const axios = require('axios');
 export default {
-  created(){
-    this.managePusher()
-  },
   mounted(){
-    this.getAllNotification()
+    this.managePusher()
     setTimeout( () => {
       this.retrieve( response => {
         if(response.data.partner.length > 0){
@@ -218,10 +215,11 @@ export default {
   component: {
   },
   computed: {
-      filterData () {
-          return this.data.filter( data => {
-              return !this.search || data.address.toLowerCase().includes(this.search.toLowerCase())
-      })
+
+    filterData () {
+        return this.data.filter( data => {
+            return !this.search || data.address.toLowerCase().includes(this.search.toLowerCase())
+    })
     }
   },
   methods: {
@@ -254,12 +252,10 @@ export default {
           })
           .catch(err => {
             console.log(err)  
-            alert("aksdjf;lkjag")
           })
         })
         .catch(err => {
           console.log(err)
-          alert("invalid tracking number")
         })
     },
 
@@ -289,10 +285,7 @@ export default {
       axios.get('http://localhost:3000/notify/' + localStorage.getItem("email"))
         .then(res => {
           if(res.data.pusher.length > 0){
-            console.log("lkasjdflkjaslkfjalsd")
             this.notify = res.data.pusher
-            console.log(res.data)
-            console.log("ajsdfkjalskfdj")
           }else{
             this.notify = []
           }
@@ -336,11 +329,11 @@ export default {
         })
         .catch(err => {
           console.log(err)
-          // alert("Invalid Tracking Number!!!")
-          this.trackNum = "",
-          this.emailTo = "",
-          this.location = "",
-          this.date = ""
+          alert("Invalid Tracking Number!!!")
+          // this.trackNum = "",
+          // this.emailTo = "",
+          // this.location = "",
+          // this.date = ""
         })
     },
     outputDate(){

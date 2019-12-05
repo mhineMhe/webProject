@@ -26,7 +26,7 @@
 
           <div variant="link" v-if="auth.userEmail !== null">
             <span
-              style="margin-top:7px;color:#3483eb;"
+              style="margin-top:7px;color:#3483eb; cursor: pointer"
               v-on:click="redirect()"
               class="fa fa-fw fa-home fa-2x"
             ></span>
@@ -71,7 +71,6 @@ export default {
       }else{
         ROUTER.push('/dashboard')
       }
-      
     },
 
     logout(){
@@ -82,6 +81,8 @@ export default {
       e.preventDefault();
       // alert(localStorage.getItem("email"))
       AUTH.login(this.form.email, this.form.password)
+      this.form.email = ""
+      this.form.password = ""
         // .then(response => {
         //   this.userEmail = response.data.email;
         // })

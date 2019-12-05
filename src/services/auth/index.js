@@ -52,6 +52,13 @@ export default {
                 console.log(response.data);
             })
             .catch(function (error) {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'email or password is incorrect',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
                 localStorage.removeItem("email")
                 console.log(error);
             });
@@ -79,15 +86,14 @@ export default {
                     }
                 }).then((result) => {
                     if (
-                        /* Read more about handling dismissals below */
                         result.dismiss === Swal.DismissReason.timer
                     ) {
                         console.log('I was closed by the timer')
+                        localStorage.clear()
+                        ROUTER.push('/Homepage')
                     }
                 })
                 this.userEmail = null;
-                localStorage.clear()
-                ROUTER.push('/Homepage')
             }
         });
     }

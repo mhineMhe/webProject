@@ -140,6 +140,7 @@
 
 <script>
 import ROUTER from "router"
+const Swal = require('sweetalert2')
 const axios = require('axios')
 // import { mapGetters } from 'vuex'
 export default {
@@ -187,19 +188,41 @@ export default {
       });
     },
     searchTrackNum(){
-      axios.post('http://localhost:3000/validateTrackingNum/' + this.searchTrack)
+      if(this.searchTrack == ""){
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Tracking number is required',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }else{
+        axios.post('http://localhost:3000/validateTrackingNum/' + this.searchTrack)
         .then(res => {
           console.log(res)
           axios.post('http://localhost:3000/searchTrack/'+ this.searchTrack)
           .then(response => {
             console.log(response)
             if(res.data.track.length == 0){
-              alert("invalid tracking number")
+              // alert("")
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'invalid tracking number',
+                showConfirmButton: false,
+                timer: 1500
+              })
             }else if(response.data.track.length > 0){
               this.trackingData = response.data.track
             }else{
               this.trackingData = []
-              alert("no update yet!!!")
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'No update yet',
+                showConfirmButton: false,
+                timer: 1500
+              })
             }
           })
           .catch(err => {
@@ -209,6 +232,7 @@ export default {
         .catch(err => {
           console.log(err)
         })
+      }
     },
     managePusher(){
       var channel = this.$pusher.subscribe("my-channel");

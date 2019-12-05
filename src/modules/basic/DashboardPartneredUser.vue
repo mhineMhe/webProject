@@ -236,19 +236,41 @@ export default {
     },
 
     searchTrackNum(){
-      axios.post('http://localhost:3000/validateTrackingNum/' + this.searchTrack)
+      if(this.searchTrack == ""){
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Tracking number is required',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }else{
+        axios.post('http://localhost:3000/validateTrackingNum/' + this.searchTrack)
         .then(res => {
           console.log(res)
           axios.post('http://localhost:3000/searchTrack/'+ this.searchTrack)
           .then(response => {
             console.log(response)
             if(res.data.track.length == 0){
-              alert("invalid tracking number")
+              // alert("")
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'invalid tracking number',
+                showConfirmButton: false,
+                timer: 1500
+              })
             }else if(response.data.track.length > 0){
               this.trackingData = response.data.track
             }else{
               this.trackingData = []
-              alert("no update yet!!!")
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'No update yet',
+                showConfirmButton: false,
+                timer: 1500
+              })
             }
           })
           .catch(err => {
@@ -258,6 +280,7 @@ export default {
         .catch(err => {
           console.log(err)
         })
+      }
     },
 
     managePusher(){
@@ -278,7 +301,6 @@ export default {
               console.log(err)
             })
           console.log("I am MJ. I'm in")
-          // this.notify.unshift(notify.notify)
       })
     },
 
@@ -302,43 +324,74 @@ export default {
     },
     
     addTracking(){
-      var data = {
-        trackingNo: this.trackNum,
-        sendTo: this.emailTo,
-        locationTo: this.location,
-        date: this.date
-      }
-      axios.post('http://localhost:3000/validateTrackingNum/' + this.trackNum)
-        .then(response => {
-          console.log("askldfj")
-          console.log(response.data)
-          axios.post('http://localhost:3000/trackingInput', data)
-            .then(res => {
-              console.log(res.data)
+      if(this.trackNum == "" || this.emailTo == "" || this.location == ""){
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'all fields are required',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }else{
+        var data = {
+          trackingNo: this.trackNum,
+          sendTo: this.emailTo,
+          locationTo: this.location,
+          date: this.date
+        }
+        axios.post('http://localhost:3000/validateTrackingNum/' + this.trackNum)
+          .then(response => {
+            console.log("asj;ldfjlasjdlfj")
+            console.log(response.data)
+            if(response.track.length < 0){
               Swal.fire({
                 position: 'center',
-                icon: 'success',
-                title: 'Successfully Sent',
+                icon: 'error',
+                title: 'invalid tracking number',
                 showConfirmButton: false,
                 timer: 1500
               })
+            }else{
+              axios.post('http://localhost:3000/trackingInput', data)
+              .then(res => {
+                console.log(res.data)
+                Swal.fire({
+                  position: 'center',
+                  icon: 'success',
+                  title: 'Successfully Sent',
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+                var notify = {
+                  trackingNum: this.trackNum,
+                  sendemail: localStorage.getItem("email"),
+                  recemail: this.emailTo
+                }
+                axios.post("http://localhost:3000/pusher", notify)
+                  .then(response => {
+                    console.log(response)
+                  })
+                  .catch(err => {
+                  console.log(err)
+                })
+              })
+              .catch(err => {
+                console.log(err)
+              })
+            }
+          })
+          .catch(err => {
+            console.log(err)
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: 'invalid tracking number',
+              showConfirmButton: false,
+              timer: 1500
             })
-            .catch(err => {
-              // this.trackNum = "",
-              // this.emailTo = "",
-              // this.location = "",
-              // this.date = ""
-              console.log(err)
-            })
-        })
-        .catch(err => {
-          console.log(err)
-          alert("Invalid Tracking Number!!!")
-          // this.trackNum = "",
-          // this.emailTo = "",
-          // this.location = "",
-          // this.date = ""
-        })
+          })
+      }
+      
     },
     outputDate(){
       var d = new Date()

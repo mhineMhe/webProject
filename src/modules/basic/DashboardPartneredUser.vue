@@ -45,24 +45,24 @@
             </div>
           </b-tab> -->
           <b-tab title="Activities" @click="getAllNotification()">
-            <div>
-              <vs-row vs-justify="center">
-                <vs-col type="flex" vs-w="10">
-                  <div slot="header">
+            <div v-for="(item,index) in notify" :key="index">
+             <vs-row  >
+                <vs-col  vs-type="flex" vs-w="12">
+                  <vs-card>
+                    <div slot="header">
                       <h3>
-                        Authorization Form
+                       Authorization Letter
                       </h3>
-                    </div><br>
-                  <vs-card actionable class="cardx" v-for="(item,index) in notify" :key="index">
-                    <div style="border:solid black"><br>
-                      <b-card-text>You Send Authorization letter to {{item.senderEmail}}.</b-card-text>
+                    </div>
+                    <div>
+                      <b-card-text>From :  {{item.senderEmail}}.</b-card-text>
                       <b-card-text>Tracking Number is : {{item.tracknum}}</b-card-text>
                       <b-card-text>Date: mm/dd/yy hh:mm:ss</b-card-text>
                     </div>
                     <div slot="footer">
                       <vs-row vs-justify="flex-end">
-                        <vs-button color="primary" type="gradient" @click="viewAuth(index)">View</vs-button>
-                        <vs-button color="danger" type="gradient" @click="deleteNotification(index)">Delete</vs-button>
+                        <vs-button color="primary" type="gradient" @click="viewAuth(index)" >View</vs-button>
+                        <vs-button color="danger" type="gradient"  @click="deleteNotification(index)">Delete</vs-button>
                       </vs-row>
                     </div>
                   </vs-card>
@@ -72,27 +72,27 @@
           </b-tab>
           <!-- TAb 3 -->
           <b-tab title="Track">
-            <b-container>
-              <b-row>
-                <b-col cols="2">
-                </b-col>
-                <b-col cols="8">
-                   <b-form-group label="Tracking No.">
-                      <i id="searchIcon" class="fa fa-search fa_custom fa-2x" style="cursor: pointer" @click="searchTrackNum()"></i>
-                      <b-form-input id="tracking" required placeholder="e.g 123456789012" v-model="searchTrack"></b-form-input>
-                  </b-form-group>
-                  <b-card id="cardTracking" scrollable>
-                      <b-row no-gutters v-for="(item, index) in trackingData" :key="index">
-                        <label style="font-size: 30px">{{item.sendTo}}</label><br><br>
-                        <label style="font-size: 30px">{{item.locationTo}}</label><br><br>
-                        <label style="font-size: 30px">{{item.date}}</label><br>
-                      </b-row>
-                  </b-card>
-                </b-col>
-                <b-col cols="2">
-                </b-col>
-              </b-row>
-            </b-container>
+            <div>
+             <vs-row vs-justify="center">
+                <vs-col  type="flex" vs-justify="center" vs-align="center" vs-w="6">
+                  <vs-card>
+                    <div slot="header">
+                      <b-form-group label="Tracking No.">
+                          <i id="searchIcon" class="fa fa-search fa_custom fa-2x" style="cursor: pointer" @click="searchTrackNum()"></i>
+                          <b-form-input id="tracking" required placeholder="e.g 123456789012" v-model="searchTrack"></b-form-input>
+                      </b-form-group>
+                    </div>
+                    <div id="cardTracking" scrollable >
+                      <vs-card v-for="(item, index) in trackingData" :key="index">
+                        <b-card-text >Receiver : {{item.sendTo}}</b-card-text>
+                        <b-card-text >Receiver Location : {{item.locationTo}}</b-card-text>
+                        <b-card-text >Date Receive : {{item.date}}</b-card-text>
+                      </vs-card>
+                    </div>
+                  </vs-card>
+                </vs-col>
+              </vs-row>
+            </div>
           </b-tab>
           <!-- Tab 4 -->
           <b-tab title="Tracking Form" @click="outputDate()">
@@ -143,7 +143,7 @@
 }
 .card{
   text-align: center;
-  border-color: $motif;
+  border: 2px solid $motif;
 }
 #searchBar{
   width: 30%;
@@ -158,7 +158,7 @@
   border: 2px solid;
   border-radius: 5px;
   border-color: $motif;
-  width: 110%;
+  width: 100%;
 }
 #tracking{
   width: 90%;
@@ -185,6 +185,7 @@
 
 <script>
 import ROUTER from "router"
+const Swal = require('sweetalert2')
 const axios = require('axios');
 export default {
   mounted(){
@@ -314,10 +315,13 @@ export default {
           axios.post('http://localhost:3000/trackingInput', data)
             .then(res => {
               console.log(res.data)
-              // this.trackNum = "",
-              // this.emailTo = "",
-              // this.location = "",
-              // this.date = ""
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Successfully Sent',
+                showConfirmButton: false,
+                timer: 1500
+              })
             })
             .catch(err => {
               // this.trackNum = "",

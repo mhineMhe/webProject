@@ -13,15 +13,16 @@
           </b-col>
           <b-col cols="4">
             <b-img
+            style="cursor: pointer"
               thumbnail
               flui
               v-b-tooltip.hover.top
               title="Change your Avatar"
-              :src="imgUrl"
               alt="Image 3"
               accept="image;"
               id="userIcon"
               rounded="circle"
+              :src="imgUrl?imgUrl:placeHolder"
               @click="$refs.file.click()"
             ></b-img>
             <div>
@@ -32,10 +33,11 @@
                   @change="handleFileUpload()"
                   ref="file"
                   style="display:none"
+                  :disabled="!inputEnable"
                 />
                 <center>
                   <br />
-                  <button :disabled="file.length" id="button" class="border border" @click="submit">Update Profile</button>
+                  <b-button v-on:click="submit" id="login">Update Profile</b-button>
                   <br><h1>Hi {{Uname}}</h1>
                 </center>
               </span>
@@ -50,6 +52,7 @@
                 class="form-control"
                 id="fullname"
                 v-model="fullname"
+                :disabled="!inputEnable"
               ></b-form-input>
             </div>
             <div class="form-group">
@@ -60,11 +63,12 @@
                 class="form-control"
                 id="Username"
                 v-model="username"
+                :disabled="!inputEnable"
               ></b-form-input>
             </div>
             <div class="form-group">
               <label for="email" class="bmd-label-floating">Email</label>
-              <b-form-input required type="email" class="form-control" id="Email" v-model="email"></b-form-input>
+              <b-form-input required type="email" class="form-control" id="Email" v-model="email" :disabled="!inputEnable"></b-form-input>
             </div>
             <div class="form-group">
               <label for="address" class="bmd-label-floating">Address</label>
@@ -74,11 +78,12 @@
                 class="form-control"
                 id="Address"
                 v-model="address"
+                :disabled="!inputEnable"
               ></b-form-input>
             </div>
             <div class="form-group">
               <label for="phone" class="bmd-label-floating">PhoneNo.</label>
-              <b-form-input required type="text" class="form-control" id="phone" v-model="phone"></b-form-input>
+              <b-form-input required type="text" class="form-control" id="phone" v-model="phone" :disabled="!inputEnable"></b-form-input>
             </div>
             <div class="form-group">
               <label for="pwd" class="bmd-label-floating">Password</label>
@@ -88,16 +93,13 @@
                 class="form-control"
                 id="passw"
                 v-model="password"
+                :disabled="!inputEnable"
               ></b-form-input>
             </div>
             <br>
               <center>
-              <button
-                type="button"
-                class="btn btn-outline-primary login-btn"
-                id="btnLogin"
-                @click="submit"
-              >Save changes</button>
+              <b-button v-show="show" v-on:click="update" id="login">Update</b-button>
+              <b-button v-show="!show" v-on:click="save" id="login">Save</b-button>
             </center>
           </b-col>
           <b-col cols="2">
@@ -114,12 +116,11 @@
 <script>
 import AUTH from "services/auth";
 import axios from "axios";
-import $ from "jquery";
 export default {
   data() {
     return {
-      imgUrl:
-        "https://lakewangaryschool.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile-sq.jpg",
+      placeHolder: "https://lakewangaryschool.sa.edu.au/wp-content/uploads/2017/11/placeholder-profile-sq.jpg",
+      imgUrl:null,
       auth: AUTH,
       file:'',
       fullname: "",
@@ -128,7 +129,9 @@ export default {
       address: "",
       phone: "",
       password: "",
-      Uname: ""
+      Uname: "",
+      inputEnable: false,
+      show: true
     };
   },
   mounted(){
@@ -142,7 +145,7 @@ export default {
   },
   methods: {
     retrieveData(){
-      axios.post("http://localhost:3000/onePartner/" + localStorage.getItem("profEmail"))
+      axios.post("http://localhost:3000/onePartner/" + localStorage.getItem("email"))
         .then(res => {
           this.username = res.data.partner[0].username
           this.email = res.data.partner[0].email
@@ -157,28 +160,6 @@ export default {
           console.log(err)
         })
     },
-    save: function(e) {
-      e.preventDefault();
-      var data= {
-        fullname: this.fullname,
-        username: this.username,
-        email: this.email,
-        password: this.password,
-        address: this.address,
-        phoneNum: this.phone,
-      }
-      axios.post("http://localhost:3000/onePartner/" + localStorage.getItem("email"), data)
-        .then(res => {
-          console.log("asjdflk")
-          console.log(res)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    },
-    addImage() {
-      $("#images")[0].click();
-    },
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
       this.imgUrl = URL.createObjectURL(this.file);
@@ -186,27 +167,20 @@ export default {
       
     },
     submit() {
-      /*
-                Initialize the form data
-            */
       let formData = new FormData();
-      /*
-                Add the form data we need to submit
-            */
-           var data= {
+      var data= {
         fullname: this.fullname,
         username: this.username,
         email: this.email,
         password: this.password,
         address: this.address,
         phoneNum: this.phone,
+        profilePic: this.imgUrl
       }
       formData.append("img", this.file);
       formData.append("details", JSON.stringify(data));
-      formData.append("user", localStorage.getItem("profEmail"));
-      /*
-          Make the request to the POST /single-file URL
-        */
+      formData.append("user", localStorage.getItem("email"));
+
       axios
         .post("http://localhost:3000/uploadSingle", formData, {
           headers: {
@@ -215,50 +189,36 @@ export default {
         })
         .then((res)=> {
           console.log(res)
-
-
-          // axios.post("http://localhost:3000/profile/" + localStorage.getItem("email"), {profile: res.data.filename})
-          //   .then(response => {
-          //     console.log(response)
-          //   })
-          //   .catch(err => {
-          //     console.log(err)
-          //   })
-          //   console.log(res.data.filename)
-          //   localStorage.setItem("image", res.data.filename)
-          //   this.imgUrl = res.data.filename
           this.imgUrl = res.data.profilePic
           })  
         .catch((err)=> {
           console.log(err);
         });
     },
-    getProfile(){
-
+    save(){
+      var data= {
+        fullname: this.fullname,
+        username: this.username,
+        email: this.email,
+        password: this.password,
+        address: this.address,
+        phoneNum: this.phone
+      }
+      axios
+        .post("http://localhost:3000/profileData/" + localStorage.getItem("email"), data)
+        .then((res)=> {
+          console.log(res)
+          this.inputEnable = false
+          this.show = true
+          })  
+        .catch((err)=> {
+          console.log(err);
+        });
+    },
+    update(){
+      this.inputEnable = true
+      this.show = false
     }
-    /*
-        Handles a change on the file upload
-      */
-    // setUploadFile(event){
-    //     let files = event.target.files ||
-    //       event.dataTransfer.files
-    //     if(!files.length){
-    //       return false;
-    //     }else{
-    //       this.files = files[0]
-    //       this.createFiles(files[0])
-    //     }
-    // },
-    // Upload(){
-    //   let formData = new FormData()
-    //   formData.append('files' , this.files)
-    //   formData.append('files_url',this.file.name)
-    // },
-    // createFile(file){
-    //   let fileReader = new FileReader()
-    //   FileReader.readerDataURL(file)
-    //   this.upload()
-    // }
   }
 };
 </script>
@@ -307,5 +267,9 @@ hr {
 .border {
   border-color: #bb6bd9;
   border-radius: 0.25rem;
+}
+#login {
+  background: #bb6bd9;
+  height: 39px;
 }
 </style>

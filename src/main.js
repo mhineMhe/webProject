@@ -8,7 +8,11 @@ import router from 'router'
 import VueSidebarMenu from 'vue-sidebar-menu'
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
 import Vuelidate from 'vuelidate'
+import Vuesax from 'vuesax'
+import 'vuesax/dist/vuesax.css' //Vuesax styles
+// import Swal from 'sweetalert2'
 
+Vue.use(Vuesax);
 Vue.use(Vuelidate)
 Vue.use(VueSidebarMenu)
 Vue.use(require('vue-pusher'), {

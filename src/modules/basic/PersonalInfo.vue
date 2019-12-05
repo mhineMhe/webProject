@@ -97,6 +97,7 @@ export default {
     retrieveData(){
       axios.post("http://localhost:3000/onePartner/" + localStorage.getItem("profEmail"))
         .then(res => {
+          console.log(res)
           this.username = res.data.partner[0].username
           this.email = res.data.partner[0].email
           this.address = res.data.partner[0].address

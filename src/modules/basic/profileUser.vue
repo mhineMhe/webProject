@@ -138,16 +138,17 @@ export default {
   },
   methods: {
     retrieveData(){
-      axios.post("http://localhost:3000/onePartner/" + localStorage.getItem("email"))
+      axios.post("http://localhost:3000/oneUser/" + localStorage.getItem("email"))
         .then(res => {
-          this.username = res.data.partner[0].username
-          this.email = res.data.partner[0].email
-          this.address = res.data.partner[0].address
-          this.password = res.data.partner[0].password
-          this.phone = res.data.partner[0].phoneNum
-          this.fullname = res.data.partner[0].fullname
-          this.Uname = res.data.partner[0].username
-          this.imgUrl = res.data.partner[0].profilePic
+          console.log(res)
+          this.username = res.data.user.username
+          this.email = res.data.user.email
+          this.address = res.data.user.address
+          this.password = res.data.user.password
+          this.phone = res.data.user.phoneNum
+          this.fullname = res.data.user.fullname
+          this.Uname = res.data.user.username
+          this.imgUrl = res.data.user.profilePic
         })
         .catch(err => {
           console.log(err)
@@ -175,7 +176,7 @@ export default {
       formData.append("user", localStorage.getItem("email"));
 
       axios
-        .post("http://localhost:3000/uploadSingle", formData, {
+        .post("http://localhost:3000/uploadUser", formData, {
           headers: {
             "Content-Type": "multipart/form-data"
           }
@@ -198,7 +199,7 @@ export default {
         phoneNum: this.phone
       }
       axios
-        .post("http://localhost:3000/profileData/" + localStorage.getItem("email"), data)
+        .post("http://localhost:3000/userData/" + localStorage.getItem("email"), data)
         .then((res)=> {
           console.log(res)
           this.inputEnable = false

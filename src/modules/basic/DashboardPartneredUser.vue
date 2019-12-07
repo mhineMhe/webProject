@@ -44,7 +44,7 @@
               </b-card>
             </div>
           </b-tab> -->
-          <b-tab title="Activities" @click="getAllNotification()">
+          <b-tab :title="'Activities  ' + `${notifs>0?notifs:''}`" >
             <div v-for="(item,index) in notify" :key="index">
              <vs-row  >
                 <vs-col  vs-type="flex" vs-w="12">
@@ -52,16 +52,16 @@
                     <div slot="header">
                       <h3>
                        Authorization Letter
+                       <span v-if ="!item.read" style="color: red"><i>Unread</i></span>
                       </h3>
                     </div>
                     <div>
                       <b-card-text>From :  {{item.senderEmail}}.</b-card-text>
                       <b-card-text>Tracking Number is : {{item.tracknum}}</b-card-text>
-                      <b-card-text>Date: mm/dd/yy hh:mm:ss</b-card-text>
                     </div>
                     <div slot="footer">
                       <vs-row vs-justify="flex-end">
-                        <vs-button color="primary" type="gradient" @click="viewAuth(index)" >View</vs-button>
+                        <vs-button color="primary" type="gradient" @click="viewAuth(index, item._id)" >View</vs-button>
                         <vs-button color="danger" type="gradient"  @click="deleteNotification(index)">Delete</vs-button>
                       </vs-row>
                     </div>
@@ -117,7 +117,7 @@
                 </b-col>
                 <b-col cols="2">
                     <br>
-                    <b-button block variant id="addBtn" @click="addTracking()">Add</b-button>
+                    <b-button :disabled="!inputEnable" block variant id="addBtn" @click="addTracking()">Add</b-button>
                 </b-col>
               </b-row>
             </b-container>
@@ -180,6 +180,10 @@
   margin-left: 3%;
   width: auto;
 }
+.red{
+  color: red;
+  font-style: italic;
+}
 </style>
 
 
@@ -189,6 +193,8 @@ const Swal = require('sweetalert2')
 const axios = require('axios');
 export default {
   mounted(){
+    this.getAllNotification();
+
     this.managePusher()
     setTimeout( () => {
       this.retrieve( response => {
@@ -211,7 +217,9 @@ export default {
       emailTo: "",
       location: "",
       trackNum: "",
-      searchTrack: ""
+      notifs:0,
+      searchTrack: "",
+      inputEnable: true,
     };
   },
   component: {
@@ -219,10 +227,15 @@ export default {
   computed: {
     filterData () {
         return this.data.filter( data => {
-            return !this.search || data.address.toLowerCase().includes(this.search.toLowerCase())
+          console.log(data.email)
+            return data.email !== localStorage.getItem("email") && (!this.search || data.address.toLowerCase().includes(this.search.toLowerCase()))
     })
     }
   },
+  // updated(){
+  //   this.getAllNotification();
+  // },
+
   methods: {
     retrieve(callback){
       axios.post('http://localhost:3000/allPartners')
@@ -308,7 +321,12 @@ export default {
       axios.get('http://localhost:3000/notify/' + localStorage.getItem("email"))
         .then(res => {
           if(res.data.pusher.length > 0){
-            this.notify = res.data.pusher
+            this.notify = res.data.pusher;
+            this.notify.map(item=>{
+              if (!item.read) {
+                this.notifs+=1
+              } 
+            })
           }else{
             this.notify = []
           }
@@ -324,6 +342,7 @@ export default {
     },
     
     addTracking(){
+      this.inputEnable = false
       if(this.trackNum == "" || this.emailTo == "" || this.location == ""){
         Swal.fire({
           position: 'center',
@@ -332,6 +351,7 @@ export default {
           showConfirmButton: false,
           timer: 1500
         })
+        this.inputEnable = true
       }else{
         var data = {
           trackingNo: this.trackNum,
@@ -351,6 +371,7 @@ export default {
                 showConfirmButton: false,
                 timer: 1500
               })
+              this.inputEnable = true
             }else{
               axios.post('http://localhost:3000/trackingInput', data)
               .then(res => {
@@ -372,11 +393,13 @@ export default {
                     console.log(response)
                   })
                   .catch(err => {
-                  console.log(err)
-                })
+                    console.log(err)
+                  })
+                  this.inputEnable = true
               })
               .catch(err => {
                 console.log(err)
+                this.inputEnable = true
               })
             }
           })
@@ -389,6 +412,7 @@ export default {
               showConfirmButton: false,
               timer: 1500
             })
+            this.inputEnable = true
           })
       }
       
@@ -397,7 +421,14 @@ export default {
       var d = new Date()
       this.date = (d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + "     --time-- " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
     },
-    viewAuth(index){
+    viewAuth(index, item){
+      console.log(item)
+      axios.get("http://localhost:3000/updateNotif/"+item).then(res=>{
+        console.log(res)
+        this.getAllNotification();
+      }).catch(err=>{
+        console.log(err)
+      })
       console.log(this.notify[index].tracknum)
       localStorage.setItem("track", this.notify[index].tracknum)
       ROUTER.push('/viewAuth')

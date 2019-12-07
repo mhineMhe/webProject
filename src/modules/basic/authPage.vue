@@ -84,7 +84,7 @@
               v-b-modal.sendToModal
               id="sendTo"
               @click="shows=true"
-              v-on:click="generateTrackNumber()"
+              v-on:click.stop="generateTrackNumber"
             >Send To</b-button>
           </div>
         </b-col>

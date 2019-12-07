@@ -111,7 +111,7 @@
                 </template>
               </b-modal>
             </div>
-            <b-button id="login" type="submit">Sign Up</b-button>
+            <b-button :disabled="!inputEnable" id="login" type="submit">Sign Up</b-button>
           </center>
           <br />
         </b-form>  
@@ -142,6 +142,7 @@ export default {
       show: false,
       passwordVisible: false,
       submitted: false,
+      inputEnable: true,
     };
   },
 

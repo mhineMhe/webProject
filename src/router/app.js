@@ -35,6 +35,14 @@ export default {
             }
         },
         {
+            path: '/profileUser',
+            name: 'profileUser',
+            component: resolve => require(['modules/basic/profileUser.vue'], resolve),
+            meta: {
+                tokenRequired: true
+            }
+        },
+        {
             path: '/authorizationForm',
             name: 'authorizationForm',
             component: resolve => require(['modules/basic/authPage.vue'], resolve),

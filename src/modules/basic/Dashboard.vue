@@ -35,7 +35,7 @@
               </b-row>
             </b-container>
           </b-tab>
-           <b-tab title="Activities">
+           <b-tab :title="'Activities  ' + `${notifs>0?notifs:''}`" >
             <div v-for="(item,index) in notify" :key="index">
              <vs-row  >
                 <vs-col  vs-type="flex" vs-w="12">
@@ -43,16 +43,16 @@
                     <div slot="header">
                       <h3>
                        Authorization Letter
+                       <span v-if ="!item.read" style="color: red"><i>Unread</i></span>
                       </h3>
                     </div>
                     <div>
                       <b-card-text>From :  {{item.senderEmail}}.</b-card-text>
                       <b-card-text>Tracking Number is : {{item.tracknum}}</b-card-text>
-                      <b-card-text>Date: mm/dd/yy hh:mm:ss</b-card-text>
                     </div>
                     <div slot="footer">
                       <vs-row vs-justify="flex-end">
-                        <vs-button color="primary" type="gradient" @click="viewAuth(index)" >View</vs-button>
+                        <vs-button color="primary" type="gradient" @click="viewAuth(index, item._id)" >View</vs-button>
                         <vs-button color="danger" type="gradient"  @click="deleteNotification(index)">Delete</vs-button>
                       </vs-row>
                     </div>
@@ -171,7 +171,8 @@ export default {
       search: "",
       notify: [],
       trackingData: [],
-      searchTrack: ""
+      searchTrack: "",
+      notifs:0,
     };
   },
   component: {
@@ -261,6 +262,11 @@ export default {
         .then(res => {
           if(res.data.pusher.length > 0){
             this.notify = res.data.pusher
+            this.notify.map(item=>{
+              if (!item.read) {
+                this.notifs+=1
+              } 
+            })
           }else{
             this.notify = []
           }
@@ -308,7 +314,14 @@ export default {
           // this.date = ""
         })
     },
-    viewAuth(index){
+    viewAuth(index, item){
+      console.log(item)
+      axios.get("http://localhost:3000/updateNotif/"+item).then(res=>{
+        console.log(res)
+        this.getAllNotification();
+      }).catch(err=>{
+        console.log(err)
+      })
       console.log(this.notify[index].tracknum)
       localStorage.setItem("track", this.notify[index].tracknum)
       ROUTER.push('/viewAuth')

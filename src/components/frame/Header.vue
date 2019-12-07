@@ -22,7 +22,7 @@
             required
             placeholder="Password"
           ></b-form-input>&nbsp;&nbsp;&nbsp;
-          <b-button v-on:click="onSubmit" v-if="auth.userEmail === null" id="login">Login</b-button>
+          <b-button :disabled="!inputEnable" v-on:click="onSubmit" v-if="auth.userEmail === null" id="login">Login</b-button>
 
           <div variant="link" v-if="auth.userEmail !== null">
             <span
@@ -52,6 +52,7 @@ import AUTH from "services/auth";
 export default {
   data() {
     return {
+      inputEnable: true,
       user: "",
       auth: AUTH,
       form: {
@@ -63,7 +64,11 @@ export default {
   },
   methods: {
     goToPersonalInfo(){
-      ROUTER.push('/copyProfile')
+      if(localStorage.getItem("partner")){
+        ROUTER.push('/copyProfile')
+      }else{
+        ROUTER.push('/profileUser')
+      }
     },
     redirect() {
       if(localStorage.getItem("partner")){
@@ -79,16 +84,9 @@ export default {
 
     onSubmit(e) {
       e.preventDefault();
-      // alert(localStorage.getItem("email"))
       AUTH.login(this.form.email, this.form.password)
       this.form.email = ""
       this.form.password = ""
-        // .then(response => {
-        //   this.userEmail = response.data.email;
-        // })
-        // .catch(err => {
-        //   console.log(err);
-        // });
     }
   }
 };

@@ -8,7 +8,7 @@
         <b-navbar-nav class="ml-auto">
           <b-form-input
             class="input"
-            v-if="auth.userEmail === null"
+            v-show="$route.name ==='HomePage' || $route.path === '/' ? true : false"
             v-model="form.email"
             type="email"
             required
@@ -16,22 +16,22 @@
           ></b-form-input>&nbsp;&nbsp;&nbsp;
           <b-form-input
             class="input"
-            v-if="auth.userEmail === null"
+            v-show="$route.name ==='HomePage' || $route.path === '/' ? true : false"
             v-model="form.password"
             type="password"
             required
             placeholder="Password"
           ></b-form-input>&nbsp;&nbsp;&nbsp;
-          <b-button :disabled="!inputEnable" v-on:click="onSubmit" v-if="auth.userEmail === null" id="login">Login</b-button>
+          <b-button :disabled="!inputEnable" v-on:click="onSubmit" v-show="$route.name ==='HomePage' || $route.path === '/' ? true : false" id="login">Login</b-button>
 
-          <div variant="link" v-if="auth.userEmail !== null">
+          <div variant="link" v-show="$route.path ==='/dashboard' || $route.path === '/personalinformation' || $route.path === '/copyProfile'|| $route.path === '/profileUser' || $route.path === '/authorizationForm' || $route.path === '/dashboardPartneredUser' || $route.path === '/viewAuth' ? true : false">
             <span
               style="margin-top:7px;color:#3483eb; cursor: pointer"
               v-on:click="redirect()"
               class="fa fa-fw fa-home fa-2x"
             ></span>
           </div>
-          <div v-if="auth.userEmail !== null">
+          <div v-show="$route.path ==='/dashboard' || $route.path === '/personalinformation' || $route.path === '/copyProfile'|| $route.path === '/profileUser' || $route.path === '/authorizationForm' || $route.path === '/dashboardPartneredUser' || $route.path === '/viewAuth' ? true : false">
             <b-dropdown variant="link" toggle-class="text-decoration-none" no-caret>
               <template v-slot:button-content>
                 <span class="fas fa-user-circle fa-2x"></span>
@@ -77,11 +77,9 @@ export default {
         ROUTER.push('/dashboard')
       }
     },
-
     logout(){
       AUTH.logout()
     },
-
     onSubmit(e) {
       e.preventDefault();
       AUTH.login(this.form.email, this.form.password)

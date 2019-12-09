@@ -145,6 +145,7 @@ const axios = require('axios')
 // import { mapGetters } from 'vuex'
 export default {
    mounted(){
+      this.getAllNotification()
       this.managePusher();
       setTimeout( () => {
         this.retrieve( response => {
@@ -261,12 +262,24 @@ export default {
       axios.get('http://localhost:3000/notify/' + localStorage.getItem("email"))
         .then(res => {
           if(res.data.pusher.length > 0){
-            this.notify = res.data.pusher
-            this.notify.map(item=>{
-              if (!item.read) {
-                this.notifs+=1
-              } 
-            })
+            axios.get('http://localhost:3000/count')
+              .then(resp => {
+                if (resp.data.pusher.length > 0) {
+                  console.log("kasl;jdflasjdf")
+                  this.notify = res.data.pusher;
+                  this.notifs = resp.data.pusher.length
+                  console.log(resp.data.pusher.length)
+                } 
+              })
+              .catch(err => {
+                console.log(err)
+              })
+            // this.notify = res.data.pusher;
+            // this.notify.map(item=>{
+            //   if (!item.read) {
+            //     this.notifs+=1
+            //   } 
+            // })
           }else{
             this.notify = []
           }

@@ -37,13 +37,6 @@
             </b-container>
           </b-tab>
       <!-- Tab 2 -->
-          <!-- <b-tab title="Activities">
-            <div v-for="(item,index) in notify" :key="index">
-              <b-card>
-                <b-card-text>{{item.trackingNum}}</b-card-text>
-              </b-card>
-            </div>
-          </b-tab> -->
           <b-tab :title="'Activities  ' + `${notifs>0?notifs:''}`" >
             <div v-for="(item,index) in notify" :key="index">
              <vs-row  >
@@ -113,12 +106,15 @@
                   <b-form-group label="Date: ">
                       <b-form-input class="motif" required placeholder="Date" v-model="date" disabled></b-form-input>
                   </b-form-group>
+                  <center>
+                    <b-button :disabled="!inputEnable" block variant id="addBtn" @click="addTracking()">Add</b-button>
+                  </center>
                  
                 </b-col>
-                <b-col cols="2">
+                <!-- <b-col cols="2">
                     <br>
                     <b-button :disabled="!inputEnable" block variant id="addBtn" @click="addTracking()">Add</b-button>
-                </b-col>
+                </b-col> -->
               </b-row>
             </b-container>
           </b-tab>
@@ -170,6 +166,7 @@
 }
 #addBtn{
  background-color: $motif;
+ width: 20%;
 }
 .motif{
     border-color: $motif;
@@ -194,7 +191,6 @@ const axios = require('axios');
 export default {
   mounted(){
     this.getAllNotification();
-
     this.managePusher()
     setTimeout( () => {
       this.retrieve( response => {
@@ -235,7 +231,6 @@ export default {
   // updated(){
   //   this.getAllNotification();
   // },
-
   methods: {
     retrieve(callback){
       axios.post('http://localhost:3000/allPartners')
@@ -247,7 +242,6 @@ export default {
         console.log(error);
       });
     },
-
     searchTrackNum(){
       if(this.searchTrack == ""){
         Swal.fire({
@@ -295,7 +289,6 @@ export default {
         })
       }
     },
-
     managePusher(){
       var channel = this.$pusher.subscribe("my-channel");
       channel.bind("my-event", (notify) => {
@@ -316,17 +309,28 @@ export default {
           console.log("I am MJ. I'm in")
       })
     },
-
     getAllNotification(){
       axios.get('http://localhost:3000/notify/' + localStorage.getItem("email"))
         .then(res => {
           if(res.data.pusher.length > 0){
-            this.notify = res.data.pusher;
-            this.notify.map(item=>{
-              if (!item.read) {
-                this.notifs+=1
-              } 
-            })
+            axios.get('http://localhost:3000/count')
+              .then(resp => {
+                if (resp.data.pusher.length > 0) {
+                  console.log("kasl;jdflasjdf")
+                  this.notify = res.data.pusher;
+                  this.notifs = resp.data.pusher.length
+                  console.log(resp.data.pusher.length)
+                } 
+              })
+              .catch(err => {
+                console.log(err)
+              })
+            // this.notify = res.data.pusher;
+            // this.notify.map(item=>{
+            //   if (!item.read) {
+            //     this.notifs+=1
+            //   } 
+            // })
           }else{
             this.notify = []
           }
@@ -335,7 +339,6 @@ export default {
           console.log(err)
         })
     },
-
     redirect(route, index){
       localStorage.setItem("receiverEmail", this.filterData[index].email)
       ROUTER.push(route);
@@ -363,7 +366,7 @@ export default {
           .then(response => {
             console.log("asj;ldfjlasjdlfj")
             console.log(response.data)
-            if(response.track.length < 0){
+            if(response.data.track.length == 0){
               Swal.fire({
                 position: 'center',
                 icon: 'error',
@@ -419,7 +422,7 @@ export default {
     },
     outputDate(){
       var d = new Date()
-      this.date = (d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + "     --time-- " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
+      this.date = ("Date: " + d.getMonth() + "/" + d.getDate() + "/" + d.getFullYear() + "     Time: " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds());
     },
     viewAuth(index, item){
       console.log(item)

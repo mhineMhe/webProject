@@ -37,7 +37,7 @@
             </b-container>
           </b-tab>
       <!-- Tab 2 -->
-          <b-tab :title="'Activities  ' + `${notifs>0?notifs:''}`" >
+          <b-tab :title="'Activities  (' + `${notifs>0?notifs:''})`" >
             <div v-for="(item,index) in notify" :key="index">
              <vs-row  >
                 <vs-col  vs-type="flex" vs-w="12">
@@ -313,7 +313,7 @@ export default {
       axios.get('http://localhost:3000/notify/' + localStorage.getItem("email"))
         .then(res => {
           if(res.data.pusher.length > 0){
-            axios.get('http://localhost:3000/count')
+            axios.get('http://localhost:3000/count/' + localStorage.getItem("email"))
               .then(resp => {
                 if (resp.data.pusher.length > 0) {
                   console.log("kasl;jdflasjdf")

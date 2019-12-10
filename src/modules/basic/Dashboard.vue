@@ -35,7 +35,7 @@
               </b-row>
             </b-container>
           </b-tab>
-           <b-tab :title="'Activities  ' + `${notifs>0?notifs:''}`" >
+           <b-tab :title="'Activities  (' + `${notifs>0?notifs:''})`" >
             <div v-for="(item,index) in notify" :key="index">
              <vs-row  >
                 <vs-col  vs-type="flex" vs-w="12">
@@ -176,8 +176,9 @@ export default {
       notifs:0,
     };
   },
-  component: {
-  },
+  // updated(){
+  //   this.getAllNotification();
+  // },
   methods: {
     retrieve(callback){
       axios.post('http://localhost:3000/allPartners')
@@ -262,7 +263,7 @@ export default {
       axios.get('http://localhost:3000/notify/' + localStorage.getItem("email"))
         .then(res => {
           if(res.data.pusher.length > 0){
-            axios.get('http://localhost:3000/count')
+            axios.get('http://localhost:3000/count/' + localStorage.getItem("email"))
               .then(resp => {
                 if (resp.data.pusher.length > 0) {
                   console.log("kasl;jdflasjdf")
@@ -291,41 +292,6 @@ export default {
     redirect(route, index){
       localStorage.setItem("receiverEmail", this.filterData[index].email)
       ROUTER.push(route);
-    },
-    addTracking(){
-      var data = {
-        trackingNo: this.trackNum,
-        sendTo: this.emailTo,
-        locationTo: this.location,
-        date: this.date
-      }
-      axios.post('http://localhost:3000/validateTrackingNum/' + this.trackNum)
-        .then(response => {
-          console.log(response.data.trackingNo)
-          axios.post('http://localhost:3000/trackingInput', data)
-            .then(res => {
-              // this.trackNum = "",
-              // this.emailTo = "",
-              // this.location = "",
-              // this.date = ""
-              console.log(res.data)
-            })
-            .catch(err => {
-              // this.trackNum = "",
-              // this.emailTo = "",
-              // this.location = "",
-              // this.date = ""
-              console.log(err)
-            })
-        })
-        .catch(err => {
-          console.log(err)
-          alert("Invalid Tracking Number!!!")
-          // this.trackNum = "",
-          // this.emailTo = "",
-          // this.location = "",
-          // this.date = ""
-        })
     },
     viewAuth(index, item){
       console.log(item)

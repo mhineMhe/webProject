@@ -85,7 +85,7 @@
               id="sendTo"
               @click="shows=true"
               v-on:click.stop="generateTrackNumber"
-            >Send To</b-button>
+            >Send</b-button>
           </div>
         </b-col>
         <b-col cols="1"></b-col>
@@ -244,6 +244,7 @@
     <div>
       <b-modal
         id="sendToModal"
+        v-if="gawas?'':GOTOACTIVITIES"
         centered
         title="Tracking Number"
         ok-only
@@ -263,13 +264,14 @@
 
 <script>
 // import swal from "sweetalerts";
-// import Swal from 'sweetalert2'
+import Swal from 'sweetalert2'
 import ROUTER from "router";
 const axios = require('axios');
 export default {
   name: "authForm",
   data() {
     return {
+      gawas: true,
       show: false,
       shows: false,
       UpdateauthDocument: "______________",
@@ -341,41 +343,52 @@ export default {
   component: {},
   methods: {
     generateTrackNumber: function() {
-      const a = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
-      const b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
-      const c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
-      const d = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
-      const e = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
-      const f = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
-      var tracknum1 = Math.floor(10 + Math.random() * 90).toString();
-      var tracknum2 = Math.floor(10 + Math.random() * 90).toString();
-      var tracknum3 = Math.floor(10 + Math.random() * 90).toString();
-      this.TrackingNumber =
-        tracknum1 +
-        "-" +
-        (a + b) +
-        "-" +
-        tracknum2 +
-        "-" +
-        (c + d) +
-        "-" +
-        tracknum3 +
-        "-" +
-        (e + f);
-      console.log("trackingnumber:" + this.TrackingNumber);
-      var recEmail = localStorage.getItem("receiverEmail")
-      var notify = {
-        trackingNum: this.TrackingNumber,
-        sendemail: localStorage.getItem("email"),
-        recemail: recEmail
+      if(this.UpdateSenderName == "[SenderName]"){
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: 'Tracking number is required',
+          showConfirmButton: false,
+          timer: 1500
+        })
+      }else{
+        this.gawas = false
+        const a = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+        const b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+        const c = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+        const d = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+        const e = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+        const f = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("")[Math.floor(Math.random() * 26)];
+        var tracknum1 = Math.floor(10 + Math.random() * 90).toString();
+        var tracknum2 = Math.floor(10 + Math.random() * 90).toString();
+        var tracknum3 = Math.floor(10 + Math.random() * 90).toString();
+        this.TrackingNumber =
+          tracknum1 +
+          "-" +
+          (a + b) +
+          "-" +
+          tracknum2 +
+          "-" +
+          (c + d) +
+          "-" +
+          tracknum3 +
+          "-" +
+          (e + f);
+        console.log("trackingnumber:" + this.TrackingNumber);
+        var recEmail = localStorage.getItem("receiverEmail")
+        var notify = {
+          trackingNum: this.TrackingNumber,
+          sendemail: localStorage.getItem("email"),
+          recemail: recEmail
+        }
+        axios.post("http://localhost:3000/pusher", notify)
+          .then(response => {
+            console.log(response)
+          })
+          .catch(err => {
+            console.log(err)
+          })
       }
-      axios.post("http://localhost:3000/pusher", notify)
-        .then(response => {
-          console.log(response)
-        })
-        .catch(err => {
-          console.log(err)
-        })
     },
     checkFormValidity() {
       const valid = this.$refs.form.checkValidity();
@@ -394,50 +407,50 @@ export default {
       this.numberId = "";
     },
     GOTOACTIVITIES() {
-      console.log("This will go to Activities or Notifications!");
-      var allData = {
-        trackingNum: this.TrackingNumber,
-        senderName: localStorage.getItem("senderName"),
-        senderAddress: localStorage.getItem("senderAddress"),
-        senderZipCode: localStorage.getItem("senderZip"),
-        currentDate: this.UpdatecurrentDate,
-        receiverAddress: localStorage.getItem("receiverAddress"),
-        receiverName: localStorage.getItem("receiverName"),
-        receiverZipCode: localStorage.getItem("receiverZip"),
-        dueDate: localStorage.getItem("dueDate"),
-        documentType: localStorage.getItem("documents"),
-        identityType: localStorage.getItem("typeId"),
-        idNumber: localStorage.getItem("idNumber")
-      }
-      axios
-        .post("http://localhost:3000/authLetter", allData)
-        .then(response => {
-          console.log(response)
-          localStorage.setItem("tracking", this.TrackingNumber)
-          if(localStorage.getItem("partner")){
-              ROUTER.push('/dashboardPartneredUser');
-          }else{
-              ROUTER.push('/dashboard');
-          }
-          console.log(response)
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+        console.log("This will go to Activities or Notifications!");
+        var allData = {
+          trackingNum: this.TrackingNumber,
+          senderName: localStorage.getItem("senderName"),
+          senderAddress: localStorage.getItem("senderAddress"),
+          senderZipCode: localStorage.getItem("senderZip"),
+          currentDate: this.UpdatecurrentDate,
+          receiverAddress: localStorage.getItem("receiverAddress"),
+          receiverName: localStorage.getItem("receiverName"),
+          receiverZipCode: localStorage.getItem("receiverZip"),
+          dueDate: localStorage.getItem("dueDate"),
+          documentType: localStorage.getItem("documents"),
+          identityType: localStorage.getItem("typeId"),
+          idNumber: localStorage.getItem("idNumber")
+        }
+        axios
+          .post("http://localhost:3000/authLetter", allData)
+          .then(response => {
+            console.log(response)
+            localStorage.setItem("tracking", this.TrackingNumber)
+            if(localStorage.getItem("partner")){
+                ROUTER.push('/dashboardPartneredUser');
+            }else{
+                ROUTER.push('/dashboard');
+            }
+            console.log(response)
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
 
-        localStorage.removeItem("senderName");
-        localStorage.removeItem("senderNameUnder");
-        localStorage.removeItem("senderAddress");
-        localStorage.removeItem("senderZip");
-        localStorage.removeItem("dueDate");
-        localStorage.removeItem("receiverName");
-        localStorage.removeItem("receiverNameUnder");
-        localStorage.removeItem("receiverAddress");
-        localStorage.removeItem("receiverZip");
-        localStorage.removeItem("documents");
-        localStorage.removeItem("documentsUpper");
-        localStorage.removeItem("typeId");
-        localStorage.removeItem("idNumber");
+          localStorage.removeItem("senderName");
+          localStorage.removeItem("senderNameUnder");
+          localStorage.removeItem("senderAddress");
+          localStorage.removeItem("senderZip");
+          localStorage.removeItem("dueDate");
+          localStorage.removeItem("receiverName");
+          localStorage.removeItem("receiverNameUnder");
+          localStorage.removeItem("receiverAddress");
+          localStorage.removeItem("receiverZip");
+          localStorage.removeItem("documents");
+          localStorage.removeItem("documentsUpper");
+          localStorage.removeItem("typeId");
+          localStorage.removeItem("idNumber");
     },
     handleOk(bvModalEvt) {
       localStorage.removeItem("senderName");
